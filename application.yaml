@@ -1,0 +1,48 @@
+app:
+  name: 'Ruh Therapy'
+  env: 'development'
+  port: 3000
+
+.service: &service ${SERVICE_NAME:api}
+.version: &version ${SERVICE_VERSION:1.0.0}
+.environment: &environment ${APM_ENVIRONMENT:local}
+
+port: 3000
+name: *service
+version: *version
+
+db:
+  type: ${DB_TYPE}
+  host: ${DB_HOST}
+  port: ${DB_PORT:5432}
+  username: ${DB_USERNAME}
+  password: ${DB_PASS}
+  database: ${DB_NAME}
+  synchronize: ${DB_SYNCHRONIZE}
+  ssl:
+    enabled: ${DB_SSL_ENABLED}
+    rejectUnauthorized: ${DB_SSL_REJECT_UNAUTHORIZED}
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION}
+
+logger:
+  level: ${LOGGER_LEVEL:debug}
+  format: ${LOGGER_FORMAT:plain}
+  mixin:
+    service.name: *service
+    service.version: *version
+    deployment.environment: *environment
+  redact:
+    - email
+    - password
+    - accessToken
+    - name
+
+swagger:
+  path: api
+  title: Ruh Therapy API
+  description: APIs available for the Ruh Therapy
+  tags:
+    - ruh-therapy
