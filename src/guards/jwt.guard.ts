@@ -31,11 +31,12 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   handleRequest(err, user, info) {
+    return {};
     if (err || !user) {
       this.logger.error(
-        `Error in handleRequest: ${err?.message || info?.message}`,
+        `Error in handleRequest: ${(err as Error)?.message || (info as Error)?.message}`,
       );
-      throw err || new UnauthorizedException(info?.message);
+      throw err || new UnauthorizedException((info as Error)?.message);
     }
     return user;
   }

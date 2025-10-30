@@ -14,6 +14,7 @@ import { ClsModule } from 'nestjs-cls';
 import { PassportModule } from '@nestjs/passport';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { JwtStrategy } from './guards/jwt.strategy';
+import { CountryModule } from './domain/countries/country.module';
 
 @Module({})
 export class AppModule {
@@ -38,7 +39,7 @@ export class AppModule {
         LoggerModule.forRoot({
           pinoHttp: {
             logger: LoggerFactory({
-              format: config.logger.format as LoggerFormat,
+              format: config.logger.format,
               level: config.logger.level,
               mixin: config.logger.mixin || {},
               redact: config.logger.redact,
@@ -72,6 +73,7 @@ export class AppModule {
         }),
         EventEmitterModule.forRoot(),
         RuhTherapyDatabaseModule.forRoot(config.db),
+        CountryModule,
       ],
       controllers: [AppController],
       providers: [

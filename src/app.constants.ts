@@ -1,4 +1,4 @@
-export const DEFAULT_PAGE_SIZE = 1000;
+export const DEFAULT_PAGE_SIZE = 100;
 export const DEFAULT_SALT_ROUNDS = 10;
 export const SESSION_USER_KEY = 'SESSION_USER';
 export const DATABASE_ERROR_MESSAGES = {
