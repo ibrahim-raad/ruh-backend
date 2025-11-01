@@ -127,9 +127,15 @@ export abstract class CrudService<
       throw new EntityNotFoundError(this.cls, criteria);
     }
 
-    entity.deleted_at = undefined;
-    const restoredEntity = await this.repository.save(entity);
-    return restoredEntity;
+    if (entity.deleted_at == undefined) {
+      return entity;
+    }
+
+    const result = await this.repository.restore(criteria);
+    if (result.affected === 0) {
+      throw new EntityNotFoundError(this.cls, criteria);
+    }
+    return Object.assign(new this.cls(), entity, { deleted_at: undefined });
   }
 
   public async all(
