@@ -4,6 +4,7 @@ export const SESSION_USER_KEY = 'SESSION_USER';
 export const DATABASE_ERROR_MESSAGES = {
   UNIQUE_VIOLATION: (column: string) => `This ${column} already exists`,
   CONFLICT_VIOLATION: `This resource conflicts with another resource`,
+  VERSION_CONFLICT: `This resource has been modified since it was last fetched. Please refresh the page and try again.`,
   NOT_NULL_VIOLATION: (column: string) => `${column} cannot be null`,
   FOREIGN_KEY_VIOLATION: 'Invalid reference to another entity',
   CHECK_VIOLATION: 'Invalid data violates business rules',
