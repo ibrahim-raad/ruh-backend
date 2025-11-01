@@ -207,7 +207,7 @@ import { ILike, IsNull, Not, Repository } from 'typeorm';
 import { CrudService } from 'src/domain/shared/abstract-crud.service';
 import { isDefined } from 'class-validator';
 import { ${SingularPascal} } from './entities/${singular}.entity';
-import { Search${SingularPascal} } from './dto/${singular}-search.dto';
+import { Search${SingularPascal} } from './dto/search-${singular}.dto';
 import { ${SingularPascal}Audit } from './entities/${singular}.entity.audit';
 
 @Injectable()
@@ -238,9 +238,9 @@ cat > "$DOMAIN_DIR/${singular}.mapper.ts" <<EOF
 import { Injectable } from '@nestjs/common';
 import { isEqual } from '../../utils';
 import { isDefined } from 'class-validator';
-import { Create${SingularPascal} } from './dto/${singular}-create.dto';
+import { Create${SingularPascal} } from './dto/create-${singular}.dto';
 import { ${SingularPascal} } from './entities/${singular}.entity';
-import { Update${SingularPascal} } from './dto/${singular}-update.dto';
+import { Update${SingularPascal} } from './dto/update-${singular}.dto';
 import { ConflictUpdateError } from 'src/errors/conflict-update.error';
 import { ${SingularPascal}Output } from './dto/${singular}.output';
 
@@ -308,10 +308,10 @@ import { ApiBearerAuth, ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { ApiException, ApiPageResponse } from 'src/domain/shared/decorators';
 import { PageOutput } from 'src/domain/shared/page.output';
 import { ${SingularPascal}Service } from './${singular}.service';
-import { Create${SingularPascal} } from './dto/${singular}-create.dto';
+import { Create${SingularPascal} } from './dto/create-${singular}.dto';
 import { ${SingularPascal}Output } from './dto/${singular}.output';
-import { Search${SingularPascal} } from './dto/${singular}-search.dto';
-import { Update${SingularPascal} } from './dto/${singular}-update.dto';
+import { Search${SingularPascal} } from './dto/search-${singular}.dto';
+import { Update${SingularPascal} } from './dto/update-${singular}.dto';
 import { isDefined } from 'class-validator';
 import { ${SingularPascal}Mapper } from './${singular}.mapper';
 import { DateRangeInput } from '../shared/dto/date-range.dto';
