@@ -16,6 +16,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { JwtStrategy } from './guards/jwt.strategy';
 import { CountryModule } from './domain/countries/country.module';
 import { LanguageModule } from './domain/languages/language.module';
+import { SpecializationModule } from './domain/specializations/specialization.module';
 
 @Module({})
 export class AppModule {
@@ -76,6 +77,7 @@ export class AppModule {
         RuhTherapyDatabaseModule.forRoot(config.db),
         CountryModule,
         LanguageModule,
+        SpecializationModule,
       ],
       controllers: [AppController],
       providers: [
