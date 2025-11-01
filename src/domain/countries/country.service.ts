@@ -4,7 +4,7 @@ import { ILike, IsNull, Not, Repository } from 'typeorm';
 import { CrudService } from 'src/domain/shared/abstract-crud.service';
 import { isDefined } from 'class-validator';
 import { Country } from './entities/country.entity';
-import { SearchCountry } from './dto/country-search.dto';
+import { SearchCountry } from './dto/search-country.dto';
 import { CountryAudit } from './entities/country.entity.audit';
 
 @Injectable()

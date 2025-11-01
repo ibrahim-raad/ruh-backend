@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { isEqual } from '../../utils';
 import { isDefined } from 'class-validator';
-import { CreateCountry } from './dto/country-create.dto';
+import { CreateCountry } from './dto/create-country.dto';
 import { Country } from './entities/country.entity';
-import { UpdateCountry } from './dto/country-update.dto';
+import { UpdateCountry } from './dto/update-country.dto';
 import { ConflictUpdateError } from 'src/errors/conflict-update.error';
 import { CountryOutput } from './dto/country.output';
 
