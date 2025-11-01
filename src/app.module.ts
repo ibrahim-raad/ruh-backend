@@ -9,12 +9,13 @@ import { ConfigModule, registerAs } from '@nestjs/config';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { DatabaseConfig } from './config/database.config';
 import { LoggerModule } from 'nestjs-pino';
-import { LoggerFactory, LoggerFormat } from './lib/logger/logger.factory';
+import { LoggerFactory } from './lib/logger/logger.factory';
 import { ClsModule } from 'nestjs-cls';
 import { PassportModule } from '@nestjs/passport';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { JwtStrategy } from './guards/jwt.strategy';
 import { CountryModule } from './domain/countries/country.module';
+import { LanguageModule } from './domain/languages/language.module';
 
 @Module({})
 export class AppModule {
@@ -74,6 +75,7 @@ export class AppModule {
         EventEmitterModule.forRoot(),
         RuhTherapyDatabaseModule.forRoot(config.db),
         CountryModule,
+        LanguageModule,
       ],
       controllers: [AppController],
       providers: [
