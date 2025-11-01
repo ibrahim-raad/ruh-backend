@@ -17,6 +17,9 @@ import { JwtStrategy } from './guards/jwt.strategy';
 import { CountryModule } from './domain/countries/country.module';
 import { LanguageModule } from './domain/languages/language.module';
 import { SpecializationModule } from './domain/specializations/specialization.module';
+import { UserModule } from './domain/users/user.module';
+import { RefreshTokenModule } from './domain/refresh-tokens/refresh-token.module';
+import { AuthModule } from './domain/auth/auth.module';
 
 @Module({})
 export class AppModule {
@@ -78,6 +81,9 @@ export class AppModule {
         CountryModule,
         LanguageModule,
         SpecializationModule,
+        UserModule,
+        RefreshTokenModule,
+        AuthModule,
       ],
       controllers: [AppController],
       providers: [
