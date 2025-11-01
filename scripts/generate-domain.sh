@@ -125,7 +125,7 @@ EOF
 
 # ---------- Entities ----------
 cat > "$ENTITIES_DIR/${singular}.entity.ts" <<EOF
-import { IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { AbstractEntity } from 'src/domain/shared/abstract.entity';
 import { Column, Entity, Index } from 'typeorm';
 
@@ -134,7 +134,6 @@ import { Column, Entity, Index } from 'typeorm';
 export class ${SingularPascal} extends AbstractEntity {
   @IsNotEmpty()
   @IsString()
-  @MinLength(3)
   @Column({ nullable: false, length: 255, unique: true })
   name: string;
 }
@@ -481,6 +480,9 @@ import { ${SingularPascal}Mapper } from './${singular}.mapper';
 })
 export class ${SingularPascal}Module {}
 EOF
+
+# ---------- Run Formatting ----------
+npm run format
 
 echo "\n✔ Generated domain: $PluralPascal ($plural)"
 echo "  • Directory: src/domain/$plural"
