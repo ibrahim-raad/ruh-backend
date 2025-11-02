@@ -21,6 +21,7 @@ import { RefreshTokenModule } from './domain/refresh-tokens/refresh-token.module
 import { AuthModule } from './domain/auth/auth.module';
 import { UserSpokenLanguageModule } from './domain/users-spoken-languages/user-spoken-language.module';
 import { AdminModule } from './domain/admins/admin.module';
+import { PatientModule } from './domain/patients/patient.module';
 
 @Module({})
 export class AppModule {
@@ -76,6 +77,7 @@ export class AppModule {
         AuthModule,
         UserSpokenLanguageModule,
         AdminModule,
+        PatientModule,
       ],
       controllers: [AppController],
       providers: [
