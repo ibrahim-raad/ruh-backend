@@ -12,7 +12,7 @@ import {
 import { AdminRole } from '../shared/admin-role.enum';
 
 @Entity('admins')
-@Index(['user'])
+@Index(['user'], { unique: true })
 export class Admin extends AbstractEntity {
   @IsNotEmpty()
   @ManyToOne(() => User, {
