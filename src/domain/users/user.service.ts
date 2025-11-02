@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, ILike, In, IsNull, Not, Repository } from 'typeorm';
 import { isDefined } from 'class-validator';
@@ -7,7 +7,6 @@ import { SearchUser } from './dto/search-user.dto';
 import { UserAudit } from './entities/user.entity.audit';
 import { CountryService } from '../countries/country.service';
 import { InRange } from '../shared/find-operator.extensions';
-import { UserPasswordStrategy } from './user-password-strategy.service';
 import { CrudService } from '../shared/abstract-crud.service';
 
 @Injectable()
@@ -18,7 +17,6 @@ export class UserService extends CrudService<User, UserAudit> {
     @InjectRepository(UserAudit)
     auditRepository: Repository<UserAudit>,
     private readonly countryService: CountryService,
-    private readonly passwordStrategy: UserPasswordStrategy,
   ) {
     super(User, repository, auditRepository, {
       country: true,
@@ -27,7 +25,6 @@ export class UserService extends CrudService<User, UserAudit> {
 
   public async create(input: User): Promise<User> {
     const country = await this.countryService.one({ id: input.countryId });
-    input.password = this.passwordStrategy.hash(input.password);
     return super.create({ ...input, country });
   }
 

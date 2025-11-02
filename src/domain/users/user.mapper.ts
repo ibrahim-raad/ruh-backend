@@ -12,10 +12,14 @@ import { UserRole } from './shared/user-role.enum';
 import { CountryMapper } from '../countries/country.mapper';
 import { SignupUser } from '../auth/dto/signup-user.dto';
 import { UserGender } from './shared/user-gender.enum';
+import { UserPasswordStrategy } from './user-password-strategy.service';
 
 @Injectable()
 export class UserMapper {
-  constructor(private readonly countryMapper: CountryMapper) {}
+  constructor(
+    private readonly countryMapper: CountryMapper,
+    private readonly strategy: UserPasswordStrategy,
+  ) {}
   public toModel(input: CreateUser): User;
   public toModel(input: SignupUser): User;
   public toModel(input: UpdateUser, existing: User): User;
@@ -44,7 +48,7 @@ export class UserMapper {
       data = {
         full_name: input.full_name,
         email: input.email,
-        password: input.password,
+        password: this.strategy.hash(input.password),
         role: input.role,
         gender: UserGender.UNKNOWN,
       };
@@ -52,7 +56,7 @@ export class UserMapper {
       data = {
         full_name: input.full_name,
         email: input.email,
-        password: input.password,
+        password: this.strategy.hash(input.password),
         role: input.role,
         gender: input.gender,
         country: input.country_id ? { id: input.country_id } : undefined,
