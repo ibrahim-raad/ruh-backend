@@ -6,7 +6,6 @@ import { UserContextInterceptor } from './interceptors/user-context.interceptor'
 import { RuhTherapyDatabaseModule } from './database/database.module';
 import { AppConfig } from './app.config';
 import { ConfigModule, registerAs } from '@nestjs/config';
-import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { DatabaseConfig } from './config/database.config';
 import { LoggerModule } from 'nestjs-pino';
 import { LoggerFactory } from './lib/logger/logger.factory';
@@ -37,10 +36,7 @@ export class AppModule {
             registerAs<DatabaseConfig>('database', () => config.db),
           ],
         }),
-        JwtModule.register({
-          secret: config.jwt.secret,
-          signOptions: { expiresIn: parseInt(config.jwt.expiration) },
-        }),
+
         LoggerModule.forRoot({
           pinoHttp: {
             logger: LoggerFactory({
@@ -67,15 +63,7 @@ export class AppModule {
           middleware: { mount: true },
         }),
         PassportModule.register({ defaultStrategy: 'jwt' }),
-        JwtModule.registerAsync({
-          imports: [ConfigModule],
-          useFactory: (): JwtModuleOptions => ({
-            secret: config.jwt.secret,
-            signOptions: {
-              expiresIn: parseInt(config.jwt.expiration),
-            },
-          }),
-        }),
+
         EventEmitterModule.forRoot(),
         RuhTherapyDatabaseModule.forRoot(config.db),
         CountryModule,

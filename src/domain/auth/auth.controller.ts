@@ -20,6 +20,7 @@ import { LoginUser } from './dto/login-user.dto';
 import { RefreshTokenInput } from './dto/refresh-token.dto';
 import { LogoutInput } from './dto/logout.dto';
 import { UserOutput } from '../users/dto/user.output';
+import { Public } from 'src/guards/decorators/public-route.decorator';
 
 @ApiTags('Auth')
 @Controller('/api/v1/auth')
@@ -30,6 +31,7 @@ export class AuthController {
   ) {}
 
   @Post('signup')
+  @Public()
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiException(() => [BadRequestException, ConflictException])
   async signup(@Body() input: SignupUser): Promise<AuthOutput> {
@@ -43,6 +45,7 @@ export class AuthController {
   }
 
   @Post('login')
+  @Public()
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiException(() => [BadRequestException, UnauthorizedException])
   async login(@Body() input: LoginUser): Promise<AuthOutput> {
@@ -54,6 +57,7 @@ export class AuthController {
   }
 
   @Post('refresh-token')
+  @Public()
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiException(() => [BadRequestException, UnauthorizedException])
   async refreshToken(
