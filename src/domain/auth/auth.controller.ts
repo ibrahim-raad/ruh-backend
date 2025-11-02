@@ -7,8 +7,10 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
   UnauthorizedException,
+  Get,
+  Request,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ApiException } from 'src/domain/shared/decorators';
 import { AuthService } from './auth.service';
 import { AuthOutput } from './dto/auth.output';
@@ -16,6 +18,8 @@ import { UserMapper } from '../users/user.mapper';
 import { SignupUser } from './dto/signup-user.dto';
 import { LoginUser } from './dto/login-user.dto';
 import { RefreshTokenInput } from './dto/refresh-token.dto';
+import { LogoutInput } from './dto/logout.dto';
+import { UserOutput } from '../users/dto/user.output';
 
 @ApiTags('Auth')
 @Controller('/api/v1/auth')
@@ -57,5 +61,26 @@ export class AuthController {
   ): Promise<{ access_token: string; refresh_token: string }> {
     const tokens = await this.service.refreshToken(input.token);
     return tokens;
+  }
+
+  @Post('logout')
+  @ApiBearerAuth()
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiException(() => [BadRequestException, UnauthorizedException])
+  async logout(@Body() input: LogoutInput): Promise<void> {
+    await this.service.logout(input.token);
+  }
+
+  @Get('me')
+  @ApiBearerAuth()
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiException(() => [BadRequestException, UnauthorizedException])
+  async me(@Request() req): Promise<UserOutput> {
+    const userId = req?.user?.id;
+    if (!userId) {
+      throw new UnauthorizedException();
+    }
+    const found = await this.service.me(userId);
+    return this.mapper.toOutput(found);
   }
 }

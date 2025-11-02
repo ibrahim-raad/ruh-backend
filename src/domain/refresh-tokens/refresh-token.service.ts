@@ -47,7 +47,7 @@ export class RefreshTokenService {
     );
   }
 
-  private async revokeToken(token: string): Promise<void> {
+  public async revokeToken(token: string): Promise<void> {
     await this.repository.update(
       { token },
       { revoked: true, revoked_at: new Date() },

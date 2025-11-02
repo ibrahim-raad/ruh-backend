@@ -75,6 +75,14 @@ export class AuthService {
     };
   }
 
+  public async logout(token: string): Promise<void> {
+    await this.refreshTokenService.revokeToken(token);
+  }
+
+  public async me(userId: string): Promise<User> {
+    return await this.userService.one({ id: userId });
+  }
+
   private async generateAccessToken(user: User): Promise<string> {
     const payload: JwtPayload = {
       id: user.id,
