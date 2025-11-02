@@ -20,7 +20,7 @@ import { ApiException, ApiPageResponse } from 'src/domain/shared/decorators';
 import { PageOutput } from 'src/domain/shared/page.output';
 import { AdminService } from './admin.service';
 import { CreateAdmin } from './dto/create-admin.dto';
-import { AdminOutput, AdminWithUserOutput } from './dto/admin.output';
+import { AdminOutput } from './dto/admin.output';
 import { SearchAdmin } from './dto/search-admin.dto';
 import { UpdateAdmin } from './dto/update-admin.dto';
 import { isDefined } from 'class-validator';
@@ -76,13 +76,13 @@ export class AdminController {
   @ApiNestedQuery({ name: 'date', type: DateRangeInput })
   public async historyAll(
     @Query() criteria: AuditSearchInput,
-  ): Promise<PageOutput<AuditOutput<AdminWithUserOutput>>> {
+  ): Promise<PageOutput<AuditOutput<AdminOutput>>> {
     const auditRecords = await this.service.historyAll(criteria);
 
     const items = auditRecords.map((record) => ({
       ...record,
       ...(isDefined(record.data) && {
-        data: this.mapper.toWithUserOutput(record.data),
+        data: this.mapper.toOutput(record.data),
       }),
     }));
 
@@ -133,7 +133,7 @@ export class AdminController {
   public async history(
     @Param('id', ParseUUIDPipe) id: string,
     @Query() criteria: AuditSearchInput,
-  ): Promise<PageOutput<AuditOutput<AdminWithUserOutput>>> {
+  ): Promise<PageOutput<AuditOutput<AdminOutput>>> {
     const auditRecords = await this.service.history({
       exist: { id },
       ...criteria,
@@ -142,7 +142,7 @@ export class AdminController {
     const items = auditRecords.map((record) => ({
       ...record,
       ...(isDefined(record.data) && {
-        data: this.mapper.toWithUserOutput(record.data),
+        data: this.mapper.toOutput(record.data),
       }),
     }));
 

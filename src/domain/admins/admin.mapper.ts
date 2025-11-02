@@ -5,7 +5,7 @@ import { CreateAdmin } from './dto/create-admin.dto';
 import { Admin } from './entities/admin.entity';
 import { UpdateAdmin } from './dto/update-admin.dto';
 import { ConflictUpdateError } from 'src/errors/conflict-update.error';
-import { AdminOutput, AdminWithUserOutput } from './dto/admin.output';
+import { AdminOutput } from './dto/admin.output';
 import { UserMapper } from '../users/user.mapper';
 import { UserRole } from '../users/shared/user-role.enum';
 
@@ -43,20 +43,11 @@ export class AdminMapper {
 
   public toOutput(input: Admin): AdminOutput {
     return Object.assign(new AdminOutput(), {
-      admin_role: input.admin_role,
-      ...this.userMapper.toOutput(input.user),
-      id: input.id,
-      admin_version: input.version,
-    });
-  }
-
-  public toWithUserOutput(input: Admin): AdminWithUserOutput {
-    return Object.assign(new AdminWithUserOutput(), {
-      ...this.toOutput(input),
       id: input.id,
       user: this.userMapper.toOutput(input.user),
       user_id: input.userId,
-      admin_version: input.version,
+      admin_role: input.admin_role,
+      version: input.version,
       created_at: input.created_at,
       updated_at: input.updated_at,
       deleted_at: input.deleted_at,
