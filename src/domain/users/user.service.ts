@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, In, IsNull, Not, Repository } from 'typeorm';
+import { FindOptionsWhere, ILike, In, IsNull, Not, Repository } from 'typeorm';
 import { isDefined } from 'class-validator';
 import { User } from './entities/user.entity';
 import { SearchUser } from './dto/search-user.dto';
@@ -40,8 +40,8 @@ export class UserService extends CrudService<User, UserAudit> {
     return super.update(old, newInput);
   }
 
-  public async find(criteria: SearchUser): Promise<User[]> {
-    const where = {
+  public generateWhere(criteria: SearchUser): FindOptionsWhere<User> {
+    return {
       // TODO: Add name search
       // ...(isDefined(criteria.name) && {
       //   name: ILike('%' + criteria.name + '%'),
@@ -60,8 +60,10 @@ export class UserService extends CrudService<User, UserAudit> {
       ...(isDefined(criteria.gender) && { gender: criteria.gender }),
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
+  }
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+  public async find(criteria: SearchUser): Promise<User[]> {
+    const where = this.generateWhere(criteria);
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

@@ -2,9 +2,7 @@ import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
 import { ROLES_KEY } from './decorators/permissions.decorator';
-// import { UserRole } from 'src/domain/users/shared/user-role.enum';
-
-type UserRole = 'admin' | 'user'; // TODO: Replace with actual user role enum
+import { UserRole } from 'src/domain/users/shared/user-role.enum';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -29,7 +27,7 @@ export class RolesGuard implements CanActivate {
       return false;
     }
 
-    if (user.role === 'admin') {
+    if (user.role === UserRole.ADMIN) {
       return true;
     }
 

@@ -1,68 +1,88 @@
 import {
   Controller,
+  Post,
   Body,
   Param,
   Patch,
   Get,
   BadRequestException,
   ConflictException,
+  UseInterceptors,
+  ClassSerializerInterceptor,
   Query,
   NotFoundException,
   Delete,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { ApiException, ApiPageResponse } from 'src/domain/shared/decorators';
 import { PageOutput } from 'src/domain/shared/page.output';
-import { UserService } from './user.service';
-
-import { UserOutput } from './dto/user.output';
-import { SearchUser } from './dto/search-user.dto';
-import { UpdateUser } from './dto/update-user.dto';
+import { AdminService } from './admin.service';
+import { CreateAdmin } from './dto/create-admin.dto';
+import { AdminOutput, AdminWithUserOutput } from './dto/admin.output';
+import { SearchAdmin } from './dto/search-admin.dto';
+import { UpdateAdmin } from './dto/update-admin.dto';
 import { isDefined } from 'class-validator';
-import { UserMapper } from './user.mapper';
+import { AdminMapper } from './admin.mapper';
 import { DateRangeInput } from '../shared/dto/date-range.dto';
 import { ApiNestedQuery } from '../shared/decorators/api-range-property.decorator';
 import { AuditSearchInput } from '../shared/dto/audit-search.dto';
 import { AuditOutput } from '../shared/dto/audit-output.dto';
+import { CurrentUser } from '../shared/decorators/current-user.decorator';
+import { User } from '../users/entities/user.entity';
+import { Roles } from 'src/guards/decorators/permissions.decorator';
+import { UserRole } from '../users/shared/user-role.enum';
+import { RolesGuard } from 'src/guards/permissions.guard';
 
-@ApiTags('Users')
-@Controller('/api/v1/users')
-@ApiExtraModels(PageOutput<UserOutput>)
-export class UserController {
+@ApiTags('Admins')
+@Controller('/api/v1/admins')
+@UseGuards(RolesGuard)
+@ApiExtraModels(PageOutput<AdminOutput>)
+@ApiBearerAuth()
+export class AdminController {
   constructor(
-    private readonly service: UserService,
-    private readonly mapper: UserMapper,
+    private readonly service: AdminService,
+    private readonly mapper: AdminMapper,
   ) {}
 
-  // TODO: add admin role check
+  @Post()
+  @Roles(UserRole.ADMIN)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiException(() => [BadRequestException, ConflictException])
+  async create(@Body() input: CreateAdmin): Promise<AdminOutput> {
+    const entity = this.mapper.toModel(input);
+    const created = await this.service.create(entity);
+    return this.mapper.toOutput(created);
+  }
+
   @Get()
-  @ApiBearerAuth()
-  @ApiPageResponse(UserOutput)
+  @Roles(UserRole.ADMIN)
+  @ApiPageResponse(AdminOutput)
   @ApiException(() => [BadRequestException])
   public async list(
-    @Query() criteria: SearchUser,
-  ): Promise<PageOutput<UserOutput>> {
+    @Query() criteria: SearchAdmin,
+  ): Promise<PageOutput<AdminOutput>> {
     const data = await this.service.find(criteria);
     return {
       hasNext: data.length === criteria.limit,
       items: data.map((item) => this.mapper.toOutput(item)),
     };
   }
-  // TODO: add admin role check
+
   @Get('history')
-  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
   @ApiException(() => [NotFoundException])
   @ApiNestedQuery({ name: 'date', type: DateRangeInput })
   public async historyAll(
     @Query() criteria: AuditSearchInput,
-  ): Promise<PageOutput<AuditOutput<UserOutput>>> {
+  ): Promise<PageOutput<AuditOutput<AdminWithUserOutput>>> {
     const auditRecords = await this.service.historyAll(criteria);
 
     const items = auditRecords.map((record) => ({
       ...record,
       ...(isDefined(record.data) && {
-        data: this.mapper.toOutput(record.data),
+        data: this.mapper.toWithUserOutput(record.data),
       }),
     }));
 
@@ -73,7 +93,7 @@ export class UserController {
   }
 
   @Patch(':id')
-  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
   @ApiException(() => [
     NotFoundException,
     BadRequestException,
@@ -81,8 +101,8 @@ export class UserController {
   ])
   async update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() input: UpdateUser,
-  ): Promise<UserOutput> {
+    @Body() input: UpdateAdmin,
+  ): Promise<AdminOutput> {
     const existing = await this.service.one({ id });
     const entity = this.mapper.toModel(input, existing);
     const updated = await this.service.update(existing, entity);
@@ -90,22 +110,30 @@ export class UserController {
   }
 
   @Get(':id')
-  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
   @ApiException(() => [NotFoundException])
-  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<UserOutput> {
+  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<AdminOutput> {
     const found = await this.service.one({ id });
     return this.mapper.toOutput(found);
   }
 
-  // TODO: add admin role check
+  @Get('me')
+  @Roles(UserRole.ADMIN)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiException(() => [NotFoundException])
+  async findMe(@CurrentUser() user: User): Promise<AdminOutput> {
+    const found = await this.service.one({ user: { id: user.id } });
+    return this.mapper.toOutput(found);
+  }
+
   @Get(':id/history')
-  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
   @ApiException(() => [NotFoundException])
   @ApiNestedQuery({ name: 'date', type: DateRangeInput })
   public async history(
     @Param('id', ParseUUIDPipe) id: string,
     @Query() criteria: AuditSearchInput,
-  ): Promise<PageOutput<AuditOutput<UserOutput>>> {
+  ): Promise<PageOutput<AuditOutput<AdminWithUserOutput>>> {
     const auditRecords = await this.service.history({
       exist: { id },
       ...criteria,
@@ -114,7 +142,7 @@ export class UserController {
     const items = auditRecords.map((record) => ({
       ...record,
       ...(isDefined(record.data) && {
-        data: this.mapper.toOutput(record.data),
+        data: this.mapper.toWithUserOutput(record.data),
       }),
     }));
 
@@ -125,30 +153,28 @@ export class UserController {
   }
 
   @Delete(':id')
-  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
   @ApiException(() => [NotFoundException])
   public async remove(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<{ message: string }> {
     await this.service.remove({ id });
-    return { message: 'User deleted' };
+    return { message: 'Admin deleted' };
   }
 
-  // TODO: add admin role check
   @Delete('permanent/:id')
-  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
   @ApiException(() => [NotFoundException])
   async permanentDelete(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<{ message: string }> {
     await this.service.permanentDelete({ id });
-    return { message: 'User permanently deleted' };
+    return { message: 'Admin permanently deleted' };
   }
 
-  // TODO: add admin role check
   @Patch('restore/:id')
-  @ApiBearerAuth()
-  async restore(@Param('id', ParseUUIDPipe) id: string): Promise<UserOutput> {
+  @Roles(UserRole.ADMIN)
+  async restore(@Param('id', ParseUUIDPipe) id: string): Promise<AdminOutput> {
     const restored = await this.service.restore({ id });
     return this.mapper.toOutput(restored);
   }

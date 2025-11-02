@@ -20,6 +20,7 @@ import { UserModule } from './domain/users/user.module';
 import { RefreshTokenModule } from './domain/refresh-tokens/refresh-token.module';
 import { AuthModule } from './domain/auth/auth.module';
 import { UserSpokenLanguageModule } from './domain/users-spoken-languages/user-spoken-language.module';
+import { AdminModule } from './domain/admins/admin.module';
 
 @Module({})
 export class AppModule {
@@ -74,6 +75,7 @@ export class AppModule {
         RefreshTokenModule,
         AuthModule,
         UserSpokenLanguageModule,
+        AdminModule,
       ],
       controllers: [AppController],
       providers: [

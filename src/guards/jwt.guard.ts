@@ -34,7 +34,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   handleRequest<User>(err, user: User, info) {
     if (err || !user) {
       // TODO: Remove this after testing
-      return new User();
+      // return new User();
       this.logger.error(
         `Error in handleRequest: ${(err as Error)?.message || (info as Error)?.message}`,
       );
