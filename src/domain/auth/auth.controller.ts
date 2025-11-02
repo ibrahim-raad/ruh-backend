@@ -8,7 +8,6 @@ import {
   ClassSerializerInterceptor,
   UnauthorizedException,
   Get,
-  Request,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ApiException } from 'src/domain/shared/decorators';
@@ -21,6 +20,8 @@ import { RefreshTokenInput } from './dto/refresh-token.dto';
 import { LogoutInput } from './dto/logout.dto';
 import { UserOutput } from '../users/dto/user.output';
 import { Public } from 'src/guards/decorators/public-route.decorator';
+import { CurrentUser } from '../shared/decorators/current-user.decorator';
+import { User } from '../users/entities/user.entity';
 
 @ApiTags('Auth')
 @Controller('/api/v1/auth')
@@ -79,8 +80,8 @@ export class AuthController {
   @ApiBearerAuth()
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiException(() => [BadRequestException, UnauthorizedException])
-  async me(@Request() req): Promise<UserOutput> {
-    const userId = req?.user?.id;
+  async me(@CurrentUser() user?: User): Promise<UserOutput> {
+    const userId = user?.id;
     if (!userId) {
       throw new UnauthorizedException();
     }

@@ -13,7 +13,6 @@ import {
   NotFoundException,
   Delete,
   ParseUUIDPipe,
-  Request,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { ApiException, ApiPageResponse } from 'src/domain/shared/decorators';
@@ -30,6 +29,7 @@ import { ApiNestedQuery } from '../shared/decorators/api-range-property.decorato
 import { AuditSearchInput } from '../shared/dto/audit-search.dto';
 import { AuditOutput } from '../shared/dto/audit-output.dto';
 import { User } from '../users/entities/user.entity';
+import { CurrentUser } from '../shared/decorators/current-user.decorator';
 
 @ApiTags('UsersSpokenLanguages')
 @Controller('/api/v1/users-spoken-languages')
@@ -46,10 +46,10 @@ export class UserSpokenLanguageController {
   @ApiException(() => [BadRequestException, ConflictException])
   async create(
     @Body() input: CreateUserSpokenLanguage,
-    @Request() req: Request & { user: User },
+    @CurrentUser() user: User,
   ): Promise<UserSpokenLanguageOutput> {
     const entity = this.mapper.toModel(input);
-    const created = await this.service.create({ ...entity, user: req.user });
+    const created = await this.service.create({ ...entity, user });
     return this.mapper.toOutput(created);
   }
 

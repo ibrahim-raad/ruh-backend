@@ -13,6 +13,7 @@ import { AbstractEntity } from './abstract.entity';
 import { AuditEntity } from './audit.entity';
 import { EntityEvent } from './entity.event';
 import { Logger } from '@nestjs/common';
+import { User } from '../users/entities/user.entity';
 
 export abstract class AbstractSubscriber<
   Model extends AbstractEntity,
@@ -36,24 +37,26 @@ export abstract class AbstractSubscriber<
     return this.entityClass;
   }
 
-  // protected sessionUser(): User | undefined {
-  //   const context = this.clsService.get('context');
+  protected sessionUser(): User | undefined {
+    const context = this.clsService.get<{ user: User | undefined }>(
+      'user-context',
+    );
 
-  //   if (!context) {
-  //     this.logger.debug('No CLS context found');
-  //     return undefined;
-  //   }
+    if (!context) {
+      this.logger.debug('No CLS context found');
+      return undefined;
+    }
 
-  //   if (!context.user) {
-  //     this.logger.debug('User not found in CLS context');
-  //     this.logger.debug(
-  //       `Available context keys: ${Object.keys(context).join(', ')}`,
-  //     );
-  //     return undefined;
-  //   }
+    if (!context.user) {
+      this.logger.debug('User not found in CLS context');
+      this.logger.debug(
+        `Available context keys: ${Object.keys(context).join(', ')}`,
+      );
+      return undefined;
+    }
 
-  //   return context.user as User;
-  // }
+    return context.user;
+  }
 
   protected async saveHistory(
     event: AuditEvent,
@@ -61,7 +64,7 @@ export abstract class AbstractSubscriber<
     entity: Model,
     emitEvent: boolean = true,
   ): Promise<any> {
-    // const user = this.sessionUser();
+    const user = this.sessionUser();
     const repository = manager.getRepository(this.auditEntityClass);
     if (!entity) return;
 
@@ -69,7 +72,7 @@ export abstract class AbstractSubscriber<
       id: entity.id,
       version: entity.version,
       event,
-      // userId: user ? `${user.id}` : undefined,
+      userId: user ? `${user.id}` : undefined,
       data: entity,
     } as DeepPartial<AuditModel>);
 
@@ -77,7 +80,7 @@ export abstract class AbstractSubscriber<
     if (emitEvent) {
       void this.eventEmitter.emitAsync(
         this.auditEventTopic[event],
-        new EntityEvent<Model>(entity, undefined), // TODO: Add user
+        new EntityEvent<Model>(entity, user),
       );
     }
 
