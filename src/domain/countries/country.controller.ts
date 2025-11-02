@@ -159,7 +159,9 @@ export class CountryController {
 
   @Patch('restore/:id')
   @ApiBearerAuth()
-  async restore(@Param('id') id: string): Promise<CountryOutput> {
+  async restore(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<CountryOutput> {
     const country = await this.service.restore({ id });
     return this.mapper.toOutput(country);
   }

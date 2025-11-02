@@ -162,7 +162,7 @@ export class UserController {
   // TODO: add admin role check
   @Patch('restore/:id')
   @ApiBearerAuth()
-  async restore(@Param('id') id: string): Promise<UserOutput> {
+  async restore(@Param('id', ParseUUIDPipe) id: string): Promise<UserOutput> {
     const restored = await this.service.restore({ id });
     return this.mapper.toOutput(restored);
   }

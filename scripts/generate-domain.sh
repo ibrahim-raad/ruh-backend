@@ -448,7 +448,9 @@ export class ${SingularPascal}Controller {
 
   @Patch('restore/:id')
   @ApiBearerAuth()
-  async restore(@Param('id') id: string): Promise<${SingularPascal}Output> {
+  async restore(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<${SingularPascal}Output> {
     const restored = await this.service.restore({ id });
     return this.mapper.toOutput(restored);
   }

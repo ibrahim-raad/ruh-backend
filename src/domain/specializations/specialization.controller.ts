@@ -161,7 +161,9 @@ export class SpecializationController {
 
   @Patch('restore/:id')
   @ApiBearerAuth()
-  async restore(@Param('id') id: string): Promise<SpecializationOutput> {
+  async restore(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<SpecializationOutput> {
     const restored = await this.service.restore({ id });
     return this.mapper.toOutput(restored);
   }

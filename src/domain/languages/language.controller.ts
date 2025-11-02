@@ -159,7 +159,9 @@ export class LanguageController {
 
   @Patch('restore/:id')
   @ApiBearerAuth()
-  async restore(@Param('id') id: string): Promise<LanguageOutput> {
+  async restore(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<LanguageOutput> {
     const restored = await this.service.restore({ id });
     return this.mapper.toOutput(restored);
   }
