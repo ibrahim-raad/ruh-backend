@@ -23,6 +23,7 @@ import { UserSpokenLanguageModule } from './domain/users-spoken-languages/user-s
 import { AdminModule } from './domain/admins/admin.module';
 import { PatientModule } from './domain/patients/patient.module';
 import { CurrencyModule } from './domain/currencies/currency.module';
+import { TherapistModule } from './domain/therapists/therapist.module';
 
 @Module({})
 export class AppModule {
@@ -80,6 +81,7 @@ export class AppModule {
         AdminModule,
         PatientModule,
         CurrencyModule,
+        TherapistModule,
       ],
       controllers: [AppController],
       providers: [

@@ -17,6 +17,7 @@ import { CountryService } from '../countries/country.service';
 import { InRange } from '../shared/find-operator.extensions';
 import { CrudService } from '../shared/abstract-crud.service';
 import { Patient } from '../patients/entities/patient.entity';
+import { Therapist } from '../therapists/entities/therapist.entity';
 
 @Injectable()
 export class UserService extends CrudService<User, UserAudit> {
@@ -55,6 +56,17 @@ export class UserService extends CrudService<User, UserAudit> {
       const patientRepo = manager.getRepository(Patient);
       const patient = patientRepo.create({ user: savedUser });
       await patientRepo.save(patient);
+      return savedUser;
+    });
+  }
+  public async createUserWithTherapist(input: User): Promise<User> {
+    return this.dataSource.transaction(async (manager) => {
+      const userRepo = manager.getRepository(User);
+      const user = userRepo.create(input);
+      const savedUser = await userRepo.save(user);
+      const therapistRepo = manager.getRepository(Therapist);
+      const therapist = therapistRepo.create({ user: savedUser });
+      await therapistRepo.save(therapist);
       return savedUser;
     });
   }

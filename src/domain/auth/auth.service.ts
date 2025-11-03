@@ -36,11 +36,6 @@ export class AuthService {
     if (!this.passwordStrategy.compare(password, user.password)) {
       throw new UnauthorizedException('Invalid email or password');
     }
-    if (user.status === UserStatus.PENDING) {
-      throw new ForbiddenException(
-        'Wait Until Administration Approves Your Account',
-      );
-    }
     if (user.status === UserStatus.BLOCKED) {
       throw new ForbiddenException('Your Account Has Been Blocked');
     }
@@ -62,8 +57,7 @@ export class AuthService {
         user = await this.userService.createUserWithPatient(input);
         break;
       case UserRole.THERAPIST:
-        // TODO: Implement therapist signup
-        user = await this.userService.create(input);
+        user = await this.userService.createUserWithTherapist(input);
         break;
       case UserRole.ADMIN:
         throw new BadRequestException('Admin signup is not allowed');
