@@ -90,11 +90,11 @@ export class User extends AbstractEntity {
   @RelationId((user: User) => user.country)
   countryId?: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @Type(() => Date)
   @IsDate()
-  @Column({ nullable: false, type: 'timestamp' })
-  date_of_birth: Date;
+  @Column({ nullable: true, type: 'timestamp' })
+  date_of_birth?: Date;
 
   @IsOptional()
   @IsString()

@@ -12,7 +12,7 @@ export class UserOutput extends AuditableOutput {
   readonly gender: UserGender;
   readonly country?: CountryOutput;
   readonly country_id?: string;
-  readonly date_of_birth: Date;
+  readonly date_of_birth?: Date;
   readonly profile_url?: string;
   readonly status: UserStatus;
   readonly email_status: UserEmailStatus;
