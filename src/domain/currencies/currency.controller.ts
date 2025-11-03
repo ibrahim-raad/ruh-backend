@@ -13,6 +13,7 @@ import {
   NotFoundException,
   Delete,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { ApiException, ApiPageResponse } from 'src/domain/shared/decorators';
@@ -28,10 +29,14 @@ import { DateRangeInput } from '../shared/dto/date-range.dto';
 import { ApiNestedQuery } from '../shared/decorators/api-range-property.decorator';
 import { AuditSearchInput } from '../shared/dto/audit-search.dto';
 import { AuditOutput } from '../shared/dto/audit-output.dto';
+import { RolesGuard } from 'src/guards/permissions.guard';
+import { Roles } from 'src/guards/decorators/permissions.decorator';
+import { UserRole } from '../users/shared/user-role.enum';
 
 @ApiTags('Currencies')
 @Controller('/api/v1/currencies')
 @ApiExtraModels(PageOutput<CurrencyOutput>)
+@UseGuards(RolesGuard)
 export class CurrencyController {
   constructor(
     private readonly service: CurrencyService,
@@ -40,6 +45,7 @@ export class CurrencyController {
 
   @Post()
   @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiException(() => [BadRequestException, ConflictException])
   async create(@Body() input: CreateCurrency): Promise<CurrencyOutput> {
@@ -64,6 +70,7 @@ export class CurrencyController {
 
   @Get('history')
   @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
   @ApiException(() => [NotFoundException])
   @ApiNestedQuery({ name: 'date', type: DateRangeInput })
   public async historyAll(
@@ -86,6 +93,7 @@ export class CurrencyController {
 
   @Patch(':id')
   @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
   @ApiException(() => [
     NotFoundException,
     BadRequestException,
@@ -113,6 +121,7 @@ export class CurrencyController {
 
   @Get(':id/history')
   @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
   @ApiException(() => [NotFoundException])
   @ApiNestedQuery({ name: 'date', type: DateRangeInput })
   public async history(
@@ -139,6 +148,7 @@ export class CurrencyController {
 
   @Delete(':id')
   @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
   @ApiException(() => [NotFoundException])
   public async remove(
     @Param('id', ParseUUIDPipe) id: string,
@@ -149,6 +159,7 @@ export class CurrencyController {
 
   @Delete('permanent/:id')
   @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
   @ApiException(() => [NotFoundException])
   async permanentDelete(
     @Param('id', ParseUUIDPipe) id: string,
@@ -159,6 +170,7 @@ export class CurrencyController {
 
   @Patch('restore/:id')
   @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
   async restore(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<CurrencyOutput> {
