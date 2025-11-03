@@ -13,6 +13,7 @@ import {
   NotFoundException,
   Delete,
   ParseUUIDPipe,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { ApiException, ApiPageResponse } from 'src/domain/shared/decorators';
@@ -27,6 +28,8 @@ import { DateRangeInput } from '../shared/dto/date-range.dto';
 import { ApiNestedQuery } from '../shared/decorators/api-range-property.decorator';
 import { AuditSearchInput } from '../shared/dto/audit-search.dto';
 import { AuditOutput } from '../shared/dto/audit-output.dto';
+import { User } from '../users/entities/user.entity';
+import { CurrentUser } from '../shared/decorators/current-user.decorator';
 
 @ApiTags('Patients')
 @Controller('/api/v1/patients')
@@ -71,6 +74,16 @@ export class PatientController {
       hasNext: items.length === criteria.limit,
       items,
     };
+  }
+
+  @Get('me')
+  @ApiBearerAuth()
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiException(() => [BadRequestException, UnauthorizedException])
+  async me(@CurrentUser() user: User): Promise<PatientOutput> {
+    const userId = user.id;
+    const found = await this.service.one({ user: { id: userId } });
+    return this.mapper.toOutput(found);
   }
 
   @Patch(':id')

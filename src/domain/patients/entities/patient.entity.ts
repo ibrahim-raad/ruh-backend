@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { AbstractEntity } from 'src/domain/shared/abstract.entity';
 import { User } from 'src/domain/users/entities/user.entity';
 import { UserGender } from 'src/domain/users/shared/user-gender.enum';
@@ -13,7 +13,7 @@ import {
 import { TherapyMode } from '../shared/therapy-mode.enum';
 
 @Entity('patients')
-@Index(['user'])
+@Index(['user'], { unique: true })
 @Index(['preferred_therapist_gender'])
 @Index(['preferred_therapy_mode'])
 export class Patient extends AbstractEntity {
@@ -29,7 +29,7 @@ export class Patient extends AbstractEntity {
   @RelationId((patient: Patient) => patient.user)
   userId: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsEnum(UserGender)
   @Column({
     nullable: false,
@@ -39,7 +39,7 @@ export class Patient extends AbstractEntity {
   })
   preferred_therapist_gender: UserGender = UserGender.UNKNOWN;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsEnum(TherapyMode)
   @Column({
     nullable: false,

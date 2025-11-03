@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   UnauthorizedException,
@@ -10,6 +11,7 @@ import { UserStatus } from '../users/shared/user-status.enum';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './dto/jwt-payload';
 import { User } from '../users/entities/user.entity';
+import { UserRole } from '../users/shared/user-role.enum';
 
 @Injectable()
 export class AuthService {
@@ -54,7 +56,18 @@ export class AuthService {
     user: User;
     tokens: { access_token: string; refresh_token: string };
   }> {
-    const user = await this.userService.create(input);
+    let user: User;
+    switch (input.role) {
+      case UserRole.PATIENT:
+        user = await this.userService.createUserWithPatient(input);
+        break;
+      case UserRole.THERAPIST:
+        // TODO: Implement therapist signup
+        user = await this.userService.create(input);
+        break;
+      case UserRole.ADMIN:
+        throw new BadRequestException('Admin signup is not allowed');
+    }
     const accessToken = await this.generateAccessToken(user);
     const refreshToken = await this.refreshTokenService.create(user);
     return {
