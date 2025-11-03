@@ -1,0 +1,6 @@
+export enum QuestionnaireType {
+  POST_SESSION = 'POST_SESSION',
+  ONBOARDING = 'ONBOARDING',
+  REFLECTION = 'REFLECTION',
+  FEEDBACK = 'FEEDBACK',
+}
