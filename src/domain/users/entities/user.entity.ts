@@ -29,7 +29,7 @@ import { Type } from 'class-transformer';
 export class User extends AbstractEntity {
   @IsNotEmpty()
   @IsString()
-  @Column({ nullable: false, length: 255, unique: true })
+  @Column({ nullable: false, length: 255 })
   full_name: string;
 
   @IsNotEmpty()

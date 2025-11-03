@@ -16,6 +16,4 @@ export class UserOutput extends AuditableOutput {
   readonly profile_url?: string;
   readonly status: UserStatus;
   readonly email_status: UserEmailStatus;
-  readonly access_token?: string;
-  readonly refresh_token?: string;
 }
