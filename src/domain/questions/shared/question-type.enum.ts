@@ -1,0 +1,6 @@
+export enum QuestionType {
+  TEXT = 'TEXT',
+  SCALE = 'SCALE',
+  MULTIPLE_SELECT = 'MULTIPLE_SELECT',
+  SINGLE_SELECT = 'SINGLE_SELECT',
+}

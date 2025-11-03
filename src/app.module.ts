@@ -25,6 +25,7 @@ import { PatientModule } from './domain/patients/patient.module';
 import { CurrencyModule } from './domain/currencies/currency.module';
 import { TherapistModule } from './domain/therapists/therapist.module';
 import { QuestionnaireModule } from './domain/questionnaires/questionnaire.module';
+import { QuestionModule } from './domain/questions/question.module';
 
 @Module({})
 export class AppModule {
@@ -84,6 +85,7 @@ export class AppModule {
         CurrencyModule,
         TherapistModule,
         QuestionnaireModule,
+        QuestionModule,
       ],
       controllers: [AppController],
       providers: [
