@@ -1,6 +1,6 @@
 export const DEFAULT_PAGE_SIZE = 100;
 export const DEFAULT_SALT_ROUNDS = 10;
-export const SESSION_USER_KEY = 'SESSION_USER';
+export const SESSION_USER_KEY = 'user-context';
 export const DATABASE_ERROR_MESSAGES = {
   UNIQUE_VIOLATION: (column: string) => `This ${column} already exists`,
   CONFLICT_VIOLATION: `This resource conflicts with another resource`,

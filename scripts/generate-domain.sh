@@ -302,6 +302,7 @@ import {
   NotFoundException,
   Delete,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { ApiException, ApiPageResponse } from 'src/domain/shared/decorators';
@@ -317,10 +318,14 @@ import { DateRangeInput } from '../shared/dto/date-range.dto';
 import { ApiNestedQuery } from '../shared/decorators/api-range-property.decorator';
 import { AuditSearchInput } from '../shared/dto/audit-search.dto';
 import { AuditOutput } from '../shared/dto/audit-output.dto';
+import { RolesGuard } from 'src/guards/permissions.guard';
+import { UserRole } from '../users/shared/user-role.enum';
+import { Roles } from 'src/guards/decorators/permissions.decorator';
 
 @ApiTags('${PluralPascal}')
 @Controller('/api/v1/${plural}')
 @ApiExtraModels(PageOutput<${SingularPascal}Output>)
+@UseGuards(RolesGuard)
 export class ${SingularPascal}Controller {
   constructor(
     private readonly service: ${SingularPascal}Service,
@@ -352,6 +357,7 @@ export class ${SingularPascal}Controller {
   }
 
   @Get('history')
+  @Roles(UserRole.ADMIN)
   @ApiBearerAuth()
   @ApiException(() => [NotFoundException])
   @ApiNestedQuery({ name: 'date', type: DateRangeInput })
@@ -401,6 +407,7 @@ export class ${SingularPascal}Controller {
   }
 
   @Get(':id/history')
+  @Roles(UserRole.ADMIN)
   @ApiBearerAuth()
   @ApiException(() => [NotFoundException])
   @ApiNestedQuery({ name: 'date', type: DateRangeInput })
@@ -437,6 +444,7 @@ export class ${SingularPascal}Controller {
   }
 
   @Delete('permanent/:id')
+  @Roles(UserRole.ADMIN)
   @ApiBearerAuth()
   @ApiException(() => [NotFoundException])
   async permanentDelete(

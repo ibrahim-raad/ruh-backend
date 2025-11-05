@@ -27,17 +27,17 @@ export class PossibleAnswerService extends CrudService<
         answer: ILike('%' + criteria.answer + '%'),
       }),
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
+      ...(isDefined(criteria.questionnaire_id) && {
+        question: {
+          questionnaire: { id: criteria.questionnaire_id },
+        },
+      }),
       ...(isDefined(criteria.question_id) && {
         question: {
           id: criteria.question_id,
           ...(isDefined(criteria.questionnaire_id) && {
             questionnaire: { id: criteria.questionnaire_id },
           }),
-        },
-      }),
-      ...(isDefined(criteria.questionnaire_id) && {
-        question: {
-          questionnaire: { id: criteria.questionnaire_id },
         },
       }),
     };

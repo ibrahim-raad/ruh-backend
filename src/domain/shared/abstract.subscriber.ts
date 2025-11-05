@@ -14,6 +14,7 @@ import { AuditEntity } from './audit.entity';
 import { EntityEvent } from './entity.event';
 import { Logger } from '@nestjs/common';
 import { User } from '../users/entities/user.entity';
+import { SESSION_USER_KEY } from 'src/app.constants';
 
 export abstract class AbstractSubscriber<
   Model extends AbstractEntity,
@@ -39,7 +40,7 @@ export abstract class AbstractSubscriber<
 
   protected sessionUser(): User | undefined {
     const context = this.clsService.get<{ user: User | undefined }>(
-      'user-context',
+      SESSION_USER_KEY,
     );
 
     if (!context) {

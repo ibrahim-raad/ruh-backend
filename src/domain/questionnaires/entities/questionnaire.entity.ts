@@ -16,6 +16,7 @@ import { User } from 'src/domain/users/entities/user.entity';
 @Index(['title'])
 @Index(['type'])
 @Index(['is_active'])
+@Index(['is_active', 'type'], { unique: true })
 @Index(['created_by'])
 export class Questionnaire extends AbstractEntity {
   @IsNotEmpty()
