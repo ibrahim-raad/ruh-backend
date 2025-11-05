@@ -15,7 +15,7 @@ import { Questionnaire } from 'src/domain/questionnaires/entities/questionnaire.
 @Index(['question', 'questionnaire'], { unique: true })
 @Index(['questionnaire'])
 @Index(['type'])
-@Index(['id', 'order'], { unique: true })
+@Index(['questionnaire', 'order'], { unique: true })
 export class Question extends AbstractEntity {
   @IsNotEmpty()
   @IsString()

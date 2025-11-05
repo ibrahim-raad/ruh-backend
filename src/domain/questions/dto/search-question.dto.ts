@@ -26,7 +26,7 @@ export class SearchQuestion implements Pageable {
 
   @IsOptional()
   @IsString()
-  readonly sort: string = 'questionnaire_id ASC, order ASC';
+  readonly sort: string = 'question ASC, order ASC';
 
   @IsOptional()
   @IsBooleanish()
