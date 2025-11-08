@@ -28,6 +28,7 @@ import { QuestionnaireModule } from './domain/questionnaires/questionnaire.modul
 import { QuestionModule } from './domain/questions/question.module';
 import { PossibleAnswerModule } from './domain/possible-answers/possible-answer.module';
 import { TherapistSpecializationModule } from './domain/therapists-specializations/therapist-specialization.module';
+import { TherapistSettingsModule } from './domain/therapists-settings/therapist-settings.module';
 
 @Module({})
 export class AppModule {
@@ -90,6 +91,7 @@ export class AppModule {
         QuestionModule,
         PossibleAnswerModule,
         TherapistSpecializationModule,
+        TherapistSettingsModule,
       ],
       controllers: [AppController],
       providers: [
