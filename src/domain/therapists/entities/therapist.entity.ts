@@ -18,9 +18,11 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   RelationId,
 } from 'typeorm';
 import { PayoutMethodStatus } from '../shared/payout-status.enum';
+import { TherapistSpecialization } from 'src/domain/therapists-specializations/entities/therapist-specialization.entity';
 
 @Entity('therapists')
 @Index(['user'], { unique: true })
@@ -110,4 +112,10 @@ export class Therapist extends AbstractEntity {
   @IsNumber()
   @Column({ nullable: false, type: 'decimal', default: 0 })
   balance_available?: number;
+
+  @OneToMany(
+    () => TherapistSpecialization,
+    (therapistSpecialization) => therapistSpecialization.therapist,
+  )
+  therapistSpecializations?: TherapistSpecialization[];
 }

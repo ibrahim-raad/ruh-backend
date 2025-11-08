@@ -22,6 +22,9 @@ export class TherapistService extends CrudService<Therapist, TherapistAudit> {
         country: true,
       },
       currency: true,
+      therapistSpecializations: {
+        specialization: true,
+      },
     });
   }
 

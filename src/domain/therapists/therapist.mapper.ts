@@ -7,6 +7,8 @@ import { ConflictUpdateError } from 'src/errors/conflict-update.error';
 import { TherapistOutput } from './dto/therapist.output';
 import { UserMapper } from '../users/user.mapper';
 import { CurrencyMapper } from '../currencies/currency.mapper';
+import { TherapistSpecialization } from '../therapists-specializations/entities/therapist-specialization.entity';
+import { SpecializationOutput } from '../specializations/dto/specialization.output';
 
 @Injectable()
 export class TherapistMapper {
@@ -61,10 +63,25 @@ export class TherapistMapper {
       payout_method_status: input.payout_method_status,
       balance_collected: parseFloat(input.balance_collected?.toString() ?? '0'),
       balance_available: parseFloat(input.balance_available?.toString() ?? '0'),
+      specializations: input.therapistSpecializations
+        ? this.toSpecializationsOutput(input.therapistSpecializations)
+        : [],
       version: input.version,
       created_at: input.created_at,
       updated_at: input.updated_at,
       deleted_at: input.deleted_at,
+    });
+  }
+
+  public toSpecializationsOutput(
+    input: TherapistSpecialization[],
+  ): SpecializationOutput[] {
+    return input.map((ths) => {
+      return {
+        id: ths.specialization.id,
+        name: ths.specialization.name,
+        description: ths.specialization.description,
+      };
     });
   }
 }
