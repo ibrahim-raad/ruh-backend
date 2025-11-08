@@ -52,22 +52,26 @@ export abstract class CrudService<
     criteria: FindOptionsWhere<Model>,
     relations: FindOptionsRelations<Model>,
     failOnNotFound: false,
+    withDeleted?: boolean,
   ): Promise<Model | null>;
 
   public async one(
     criteria: FindOptionsWhere<Model>,
     relations?: FindOptionsRelations<Model>,
     failOnNotFound?: true,
+    withDeleted?: boolean,
   ): Promise<Model>;
 
   public async one(
     criteria: FindOptionsWhere<Model>,
     relations: FindOptionsRelations<Model> = {},
     failOnNotFound = true,
+    withDeleted = false,
   ): Promise<Model | null> {
     const entity = await this.repository.findOne({
       where: criteria,
       relations: { ...this.relations, ...relations },
+      withDeleted,
     });
 
     if (failOnNotFound && !entity) {
@@ -117,9 +121,13 @@ export abstract class CrudService<
     return { message: 'Deleted successfully' };
   }
 
-  public async restore(criteria: FindOptionsWhere<Model>): Promise<Model> {
+  public async restore(
+    criteria: FindOptionsWhere<Model>,
+    relations: FindOptionsRelations<Model> = {},
+  ): Promise<Model> {
     const entity = await this.repository.findOne({
       where: criteria,
+      relations: { ...this.relations, ...relations },
       withDeleted: true,
     });
 
