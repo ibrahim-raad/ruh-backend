@@ -14,6 +14,7 @@ import {
   Delete,
   ParseUUIDPipe,
   UseGuards,
+  ForbiddenException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { ApiException, ApiPageResponse } from 'src/domain/shared/decorators';
@@ -32,6 +33,8 @@ import { AuditOutput } from '../shared/dto/audit-output.dto';
 import { RolesGuard } from 'src/guards/permissions.guard';
 import { UserRole } from '../users/shared/user-role.enum';
 import { Roles } from 'src/guards/decorators/permissions.decorator';
+import { User } from '../users/entities/user.entity';
+import { CurrentUser } from '../shared/decorators/current-user.decorator';
 
 @ApiTags('TherapistsAvailability')
 @Controller('/api/v1/therapists_availability')
@@ -44,6 +47,7 @@ export class TherapistAvailabilityController {
   ) {}
 
   @Post()
+  @Roles(UserRole.THERAPIST)
   @ApiBearerAuth()
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiException(() => [BadRequestException, ConflictException])
@@ -93,6 +97,7 @@ export class TherapistAvailabilityController {
   }
 
   @Patch(':id')
+  @Roles(UserRole.THERAPIST)
   @ApiBearerAuth()
   @ApiException(() => [
     NotFoundException,
@@ -147,11 +152,17 @@ export class TherapistAvailabilityController {
   }
 
   @Delete(':id')
+  @Roles(UserRole.THERAPIST)
   @ApiBearerAuth()
   @ApiException(() => [NotFoundException])
   public async remove(
     @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() user?: User,
   ): Promise<{ message: string }> {
+    const existing = await this.service.one({ id });
+    if (user?.id !== existing?.therapist?.user?.id) {
+      throw new ForbiddenException();
+    }
     await this.service.remove({ id });
     return { message: 'TherapistAvailability deleted' };
   }
@@ -168,9 +179,11 @@ export class TherapistAvailabilityController {
   }
 
   @Patch('restore/:id')
+  @Roles(UserRole.THERAPIST)
   @ApiBearerAuth()
   async restore(
     @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() user?: User,
   ): Promise<TherapistAvailabilityOutput> {
     const restored = await this.service.restore({ id });
     return this.mapper.toOutput(restored);
