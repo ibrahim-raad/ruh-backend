@@ -1,0 +1,12 @@
+export enum ReflectionMood {
+  HAPPY = 'HAPPY',
+  SAD = 'SAD',
+  ANGRY = 'ANGRY',
+  NEUTRAL = 'NEUTRAL',
+  CONFUSED = 'CONFUSED',
+  FRUSTRATED = 'FRUSTRATED',
+  EXCITED = 'EXCITED',
+  BORED = 'BORED',
+  TIRED = 'TIRED',
+  STRESSED = 'STRESSED',
+}
