@@ -23,6 +23,16 @@ export class UpdateTherapistAvailability {
   @IsEnum(DayOfWeek)
   readonly day_of_week?: DayOfWeek;
 
+  @IsOptional()
+  @IsString()
+  @IsMilitaryTime()
+  readonly break_start_time?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsMilitaryTime()
+  readonly break_end_time?: string;
+
   @IsNotEmpty()
   @IsNumber()
   readonly version: number;

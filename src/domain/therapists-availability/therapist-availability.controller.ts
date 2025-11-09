@@ -20,7 +20,6 @@ import { ApiBearerAuth, ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { ApiException, ApiPageResponse } from 'src/domain/shared/decorators';
 import { PageOutput } from 'src/domain/shared/page.output';
 import { TherapistAvailabilityService } from './therapist-availability.service';
-import { CreateTherapistAvailability } from './dto/create-therapist-availability.dto';
 import { TherapistAvailabilityOutput } from './dto/therapist-availability.output';
 import { SearchTherapistAvailability } from './dto/search-therapist-availability.dto';
 import { UpdateTherapistAvailability } from './dto/update-therapist-availability.dto';
@@ -45,19 +44,6 @@ export class TherapistAvailabilityController {
     private readonly service: TherapistAvailabilityService,
     private readonly mapper: TherapistAvailabilityMapper,
   ) {}
-
-  @Post()
-  @Roles(UserRole.THERAPIST)
-  @ApiBearerAuth()
-  @UseInterceptors(ClassSerializerInterceptor)
-  @ApiException(() => [BadRequestException, ConflictException])
-  async create(
-    @Body() input: CreateTherapistAvailability,
-  ): Promise<TherapistAvailabilityOutput> {
-    const entity = this.mapper.toModel(input);
-    const created = await this.service.create(entity);
-    return this.mapper.toOutput(created);
-  }
 
   @Get()
   @ApiBearerAuth()

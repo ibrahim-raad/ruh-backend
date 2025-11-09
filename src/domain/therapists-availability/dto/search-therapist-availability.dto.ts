@@ -25,7 +25,7 @@ export class SearchTherapistAvailability implements Pageable {
 
   @IsOptional()
   @IsString()
-  readonly sort: string = 'name ASC';
+  readonly sort: string = 'day_of_week ASC';
 
   @IsOptional()
   @IsBooleanish()

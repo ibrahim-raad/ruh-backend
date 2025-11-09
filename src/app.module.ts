@@ -29,6 +29,7 @@ import { QuestionModule } from './domain/questions/question.module';
 import { PossibleAnswerModule } from './domain/possible-answers/possible-answer.module';
 import { TherapistSpecializationModule } from './domain/therapists-specializations/therapist-specialization.module';
 import { TherapistSettingsModule } from './domain/therapists-settings/therapist-settings.module';
+import { TherapistAvailabilityModule } from './domain/therapists-availability/therapist-availability.module';
 
 @Module({})
 export class AppModule {
@@ -92,6 +93,7 @@ export class AppModule {
         PossibleAnswerModule,
         TherapistSpecializationModule,
         TherapistSettingsModule,
+        TherapistAvailabilityModule,
       ],
       controllers: [AppController],
       providers: [

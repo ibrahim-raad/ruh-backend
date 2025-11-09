@@ -1,4 +1,10 @@
-import { IsEnum, IsMilitaryTime, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsMilitaryTime,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { AbstractEntity } from 'src/domain/shared/abstract.entity';
 import {
   Column,
@@ -12,7 +18,10 @@ import { DayOfWeek } from '../shared/day-of-week.enum';
 import { Therapist } from 'src/domain/therapists/entities/therapist.entity';
 
 @Entity('therapists_availability')
-@Index(['therapist', 'day_of_week'])
+@Index(['therapist', 'day_of_week'], {
+  unique: true,
+  where: 'deleted_at IS NULL',
+})
 export class TherapistAvailability extends AbstractEntity {
   @ManyToOne(() => Therapist, {
     nullable: false,
@@ -30,15 +39,27 @@ export class TherapistAvailability extends AbstractEntity {
   @Column({ nullable: false, type: 'enum', enum: DayOfWeek })
   day_of_week: DayOfWeek;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @IsMilitaryTime()
-  @Column({ nullable: false, length: 5 })
-  start_time: string; // HH:MM format
+  @Column({ nullable: false, length: 5, default: '09:00' })
+  start_time: string = '09:00'; // HH:MM format
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @IsMilitaryTime()
-  @Column({ nullable: false, length: 5 })
-  end_time: string; // HH:MM format
+  @Column({ nullable: false, length: 5, default: '17:00' })
+  end_time: string = '17:00'; // HH:MM format
+
+  @IsOptional()
+  @IsString()
+  @IsMilitaryTime()
+  @Column({ nullable: false, length: 5, default: '12:00' })
+  break_start_time: string = '12:00'; // HH:MM format
+
+  @IsOptional()
+  @IsString()
+  @IsMilitaryTime()
+  @Column({ nullable: false, length: 5, default: '13:00' })
+  break_end_time: string = '13:00'; // HH:MM format
 }

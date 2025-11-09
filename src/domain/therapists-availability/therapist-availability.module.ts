@@ -8,6 +8,8 @@ import { TherapistAvailabilityController } from './therapist-availability.contro
 import { TherapistAvailabilityAudit } from './entities/therapist-availability.entity.audit';
 import { TherapistAvailabilitySubscriber } from './entities/therapist-availability.entity.subscriber';
 import { TherapistAvailabilityMapper } from './therapist-availability.mapper';
+import { TherapistAvailabilityListener } from './therapist-availability.listener';
+import { TherapistModule } from '../therapists/therapist.module';
 
 @Module({
   imports: [
@@ -17,11 +19,13 @@ import { TherapistAvailabilityMapper } from './therapist-availability.mapper';
     ]),
     ClsModule,
     EventEmitterModule,
+    TherapistModule,
   ],
   providers: [
     TherapistAvailabilityService,
     TherapistAvailabilitySubscriber,
     TherapistAvailabilityMapper,
+    TherapistAvailabilityListener,
   ],
   controllers: [TherapistAvailabilityController],
   exports: [
