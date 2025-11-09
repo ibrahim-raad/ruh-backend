@@ -16,7 +16,7 @@ export class PossibleAnswerService extends CrudService<
     @InjectRepository(PossibleAnswer)
     protected readonly repository: Repository<PossibleAnswer>,
     @InjectRepository(PossibleAnswerAudit)
-    auditRepository: Repository<PossibleAnswerAudit>,
+    protected readonly auditRepository: Repository<PossibleAnswerAudit>,
   ) {
     super(PossibleAnswer, repository, auditRepository, {});
   }

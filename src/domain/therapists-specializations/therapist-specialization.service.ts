@@ -21,7 +21,7 @@ export class TherapistSpecializationService extends CrudService<
     @InjectRepository(TherapistSpecialization)
     protected readonly repository: Repository<TherapistSpecialization>,
     @InjectRepository(TherapistSpecializationAudit)
-    auditRepository: Repository<TherapistSpecializationAudit>,
+    protected readonly auditRepository: Repository<TherapistSpecializationAudit>,
     private readonly therapistService: TherapistService,
     private readonly specializationService: SpecializationService,
     private readonly clsService: ClsService,

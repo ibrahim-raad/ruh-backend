@@ -25,7 +25,7 @@ export class UserService extends CrudService<User, UserAudit> {
     @InjectRepository(User)
     protected readonly repository: Repository<User>,
     @InjectRepository(UserAudit)
-    auditRepository: Repository<UserAudit>,
+    protected readonly auditRepository: Repository<UserAudit>,
     private readonly countryService: CountryService,
     private readonly dataSource: DataSource,
   ) {

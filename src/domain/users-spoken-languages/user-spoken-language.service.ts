@@ -18,7 +18,7 @@ export class UserSpokenLanguageService extends CrudService<
     @InjectRepository(UserSpokenLanguage)
     protected readonly repository: Repository<UserSpokenLanguage>,
     @InjectRepository(UserSpokenLanguageAudit)
-    auditRepository: Repository<UserSpokenLanguageAudit>,
+    protected readonly auditRepository: Repository<UserSpokenLanguageAudit>,
     private readonly languageService: LanguageService,
     private readonly dataSource: DataSource,
   ) {

@@ -13,7 +13,7 @@ export class LanguageService extends CrudService<Language, LanguageAudit> {
     @InjectRepository(Language)
     protected readonly repository: Repository<Language>,
     @InjectRepository(LanguageAudit)
-    auditRepository: Repository<LanguageAudit>,
+    protected readonly auditRepository: Repository<LanguageAudit>,
   ) {
     super(Language, repository, auditRepository, {});
   }

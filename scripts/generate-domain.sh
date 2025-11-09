@@ -215,7 +215,7 @@ export class ${SingularPascal}Service extends CrudService<${SingularPascal}, ${S
     @InjectRepository(${SingularPascal})
     protected readonly repository: Repository<${SingularPascal}>,
     @InjectRepository(${SingularPascal}Audit)
-    auditRepository: Repository<${SingularPascal}Audit>,
+    protected readonly auditRepository: Repository<${SingularPascal}Audit>,
   ) {
     super(${SingularPascal}, repository, auditRepository, {});
   }

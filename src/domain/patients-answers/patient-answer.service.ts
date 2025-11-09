@@ -22,7 +22,7 @@ export class PatientAnswerService extends CrudService<
     @InjectRepository(PatientAnswer)
     protected readonly repository: Repository<PatientAnswer>,
     @InjectRepository(PatientAnswerAudit)
-    auditRepository: Repository<PatientAnswerAudit>,
+    protected readonly auditRepository: Repository<PatientAnswerAudit>,
     private readonly clsService: ClsService,
     private readonly patientService: PatientService,
     private readonly questionService: QuestionService,

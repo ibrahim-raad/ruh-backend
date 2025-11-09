@@ -16,7 +16,7 @@ export class AdminService extends CrudService<Admin, AdminAudit> {
     @InjectRepository(Admin)
     protected readonly repository: Repository<Admin>,
     @InjectRepository(AdminAudit)
-    auditRepository: Repository<AdminAudit>,
+    protected readonly auditRepository: Repository<AdminAudit>,
     private readonly userService: UserService,
     private readonly dataSource: DataSource,
   ) {

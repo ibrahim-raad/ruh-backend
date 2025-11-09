@@ -14,7 +14,7 @@ export class QuestionService extends CrudService<Question, QuestionAudit> {
     @InjectRepository(Question)
     protected readonly repository: Repository<Question>,
     @InjectRepository(QuestionAudit)
-    auditRepository: Repository<QuestionAudit>,
+    protected readonly auditRepository: Repository<QuestionAudit>,
     private readonly questionnaireService: QuestionnaireService,
   ) {
     super(Question, repository, auditRepository, {});

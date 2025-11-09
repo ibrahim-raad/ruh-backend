@@ -13,7 +13,7 @@ export class CountryService extends CrudService<Country, CountryAudit> {
     @InjectRepository(Country)
     protected readonly repository: Repository<Country>,
     @InjectRepository(CountryAudit)
-    auditRepository: Repository<CountryAudit>,
+    protected readonly auditRepository: Repository<CountryAudit>,
   ) {
     super(Country, repository, auditRepository, {});
   }

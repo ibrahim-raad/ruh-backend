@@ -14,7 +14,7 @@ export class TherapistService extends CrudService<Therapist, TherapistAudit> {
     @InjectRepository(Therapist)
     protected readonly repository: Repository<Therapist>,
     @InjectRepository(TherapistAudit)
-    auditRepository: Repository<TherapistAudit>,
+    protected readonly auditRepository: Repository<TherapistAudit>,
     private readonly userService: UserService,
   ) {
     super(Therapist, repository, auditRepository, {

@@ -16,7 +16,7 @@ export class SpecializationService extends CrudService<
     @InjectRepository(Specialization)
     protected readonly repository: Repository<Specialization>,
     @InjectRepository(SpecializationAudit)
-    auditRepository: Repository<SpecializationAudit>,
+    protected readonly auditRepository: Repository<SpecializationAudit>,
   ) {
     super(Specialization, repository, auditRepository, {});
   }

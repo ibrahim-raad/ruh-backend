@@ -13,7 +13,7 @@ export class CurrencyService extends CrudService<Currency, CurrencyAudit> {
     @InjectRepository(Currency)
     protected readonly repository: Repository<Currency>,
     @InjectRepository(CurrencyAudit)
-    auditRepository: Repository<CurrencyAudit>,
+    protected readonly auditRepository: Repository<CurrencyAudit>,
   ) {
     super(Currency, repository, auditRepository, {});
   }
