@@ -13,7 +13,11 @@ import {
 import { ReflectionMood } from '../shared/reflection-mood.enum';
 
 @Entity('reflections')
-@Index(['name'])
+@Index(['patient'])
+@Index(['is_private'])
+@Index(['mood'])
+@Index(['title'])
+@Index(['content'])
 export class Reflection extends AbstractEntity {
   @IsNotEmpty()
   @IsString()
