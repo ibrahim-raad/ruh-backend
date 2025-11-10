@@ -53,11 +53,7 @@ export class TherapistSpecializationController {
   @ApiException(() => [BadRequestException, ConflictException])
   async create(
     @Body() input: CreateTherapistSpecialization,
-    @CurrentUser() user?: User,
   ): Promise<TherapistSpecializationOutput> {
-    if (user?.role !== UserRole.THERAPIST) {
-      throw new ForbiddenException();
-    }
     const entity = this.mapper.toModel(input);
     const created = await this.service.create(entity);
     return this.mapper.toOutput(created);
@@ -113,10 +109,10 @@ export class TherapistSpecializationController {
     @Body() input: UpdateTherapistSpecialization,
     @CurrentUser() user?: User,
   ): Promise<TherapistSpecializationOutput> {
-    const existing = await this.service.one({ id });
-    if (user?.id !== existing?.therapist?.user?.id) {
-      throw new ForbiddenException();
-    }
+    const existing = await this.service.one({
+      id,
+      therapist: { user: { id: user?.id } },
+    });
     const entity = this.mapper.toModel(input, existing);
     const updated = await this.service.update(existing, entity);
     return this.mapper.toOutput(updated);

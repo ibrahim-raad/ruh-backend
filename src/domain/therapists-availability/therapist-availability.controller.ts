@@ -145,11 +145,11 @@ export class TherapistAvailabilityController {
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() user?: User,
   ): Promise<{ message: string }> {
-    const existing = await this.service.one({ id });
-    if (user?.id !== existing?.therapist?.user?.id) {
-      throw new ForbiddenException();
-    }
-    await this.service.remove({ id });
+    const existing = await this.service.one({
+      id,
+      therapist: { user: { id: user?.id } },
+    });
+    await this.service.remove(existing);
     return { message: 'TherapistAvailability deleted' };
   }
 
@@ -171,7 +171,10 @@ export class TherapistAvailabilityController {
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() user?: User,
   ): Promise<TherapistAvailabilityOutput> {
-    const restored = await this.service.restore({ id });
+    const restored = await this.service.restore({
+      id,
+      therapist: { user: { id: user?.id } },
+    });
     return this.mapper.toOutput(restored);
   }
 }
