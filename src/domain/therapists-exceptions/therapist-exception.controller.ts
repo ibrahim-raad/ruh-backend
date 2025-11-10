@@ -34,7 +34,7 @@ import { UserRole } from '../users/shared/user-role.enum';
 import { Roles } from 'src/guards/decorators/permissions.decorator';
 
 @ApiTags('TherapistsExceptions')
-@Controller('/api/v1/therapists_exceptions')
+@Controller('/api/v1/therapists-exceptions')
 @ApiExtraModels(PageOutput<TherapistExceptionOutput>)
 @UseGuards(RolesGuard)
 export class TherapistExceptionController {

@@ -37,7 +37,7 @@ import { CurrentUser } from '../shared/decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';
 
 @ApiTags('TherapistsSpecializations')
-@Controller('/api/v1/therapists_specializations')
+@Controller('/api/v1/therapists-specializations')
 @ApiExtraModels(PageOutput<TherapistSpecializationOutput>)
 @UseGuards(RolesGuard)
 export class TherapistSpecializationController {

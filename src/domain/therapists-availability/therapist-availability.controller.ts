@@ -36,7 +36,7 @@ import { User } from '../users/entities/user.entity';
 import { CurrentUser } from '../shared/decorators/current-user.decorator';
 
 @ApiTags('TherapistsAvailability')
-@Controller('/api/v1/therapists_availability')
+@Controller('/api/v1/therapists-availability')
 @ApiExtraModels(PageOutput<TherapistAvailabilityOutput>)
 @UseGuards(RolesGuard)
 export class TherapistAvailabilityController {

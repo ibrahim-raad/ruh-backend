@@ -32,7 +32,7 @@ import { CurrentUser } from '../shared/decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';
 
 @ApiTags('TherapistsSettings')
-@Controller('/api/v1/therapists_settings')
+@Controller('/api/v1/therapists-settings')
 @ApiExtraModels(PageOutput<TherapistSettingsOutput>)
 @UseGuards(RolesGuard)
 export class TherapistSettingsController {
