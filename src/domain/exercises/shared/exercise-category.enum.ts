@@ -1,0 +1,8 @@
+export enum ExerciseCategory {
+  MINDFULNESS = 'MINDFULNESS',
+  CBT = 'CBT',
+  JOURNALING = 'JOURNALING',
+  BREATHING = 'BREATHING',
+  GROUNDING = 'GROUNDING',
+  CUSTOM = 'CUSTOM',
+}
