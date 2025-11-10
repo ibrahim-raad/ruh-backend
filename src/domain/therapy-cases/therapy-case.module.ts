@@ -10,6 +10,7 @@ import { TherapyCaseSubscriber } from './entities/therapy-case.entity.subscriber
 import { TherapyCaseMapper } from './therapy-case.mapper';
 import { PatientModule } from '../patients/patient.module';
 import { TherapistModule } from '../therapists/therapist.module';
+import { TherapyCaseListener } from './therapy-case.listener';
 
 @Module({
   imports: [
@@ -19,7 +20,12 @@ import { TherapistModule } from '../therapists/therapist.module';
     PatientModule,
     TherapistModule,
   ],
-  providers: [TherapyCaseService, TherapyCaseSubscriber, TherapyCaseMapper],
+  providers: [
+    TherapyCaseService,
+    TherapyCaseSubscriber,
+    TherapyCaseMapper,
+    TherapyCaseListener,
+  ],
   controllers: [TherapyCaseController],
   exports: [TherapyCaseService, TherapyCaseMapper, TypeOrmModule],
 })

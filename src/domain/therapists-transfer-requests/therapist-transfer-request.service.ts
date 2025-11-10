@@ -12,6 +12,9 @@ import { ClsService } from 'nestjs-cls';
 import { User } from '../users/entities/user.entity';
 import { SESSION_USER_KEY } from 'src/app.constants';
 import { TherapyCaseService } from '../therapy-cases/therapy-case.service';
+import { TherapistTransferRequestStatus } from './shared/therapist-transfer-request-status.enum';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { TherapistTransferRequestTopic } from './shared/therapist-transfer-request-topic.enum';
 
 @Injectable()
 export class TherapistTransferRequestService extends CrudService<
@@ -27,6 +30,7 @@ export class TherapistTransferRequestService extends CrudService<
     private readonly patientService: PatientService,
     private readonly therapyCaseService: TherapyCaseService,
     private readonly clsService: ClsService,
+    private readonly eventEmitter: EventEmitter2,
   ) {
     super(TherapistTransferRequest, repository, auditRepository, {
       therapist: {
@@ -77,6 +81,22 @@ export class TherapistTransferRequestService extends CrudService<
       },
     );
     return this.repository.save(therapistTransferRequest);
+  }
+
+  public async update(
+    old: TherapistTransferRequest,
+    input: TherapistTransferRequest,
+  ): Promise<TherapistTransferRequest> {
+    const updated = await super.update(old, input);
+    if (
+      old.status !== input.status &&
+      input.status === TherapistTransferRequestStatus.APPROVED
+    ) {
+      this.eventEmitter.emit(TherapistTransferRequestTopic.APPROVED, {
+        data: updated,
+      });
+    }
+    return updated;
   }
 
   public async find(

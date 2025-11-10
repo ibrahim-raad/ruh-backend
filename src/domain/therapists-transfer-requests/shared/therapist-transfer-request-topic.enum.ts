@@ -4,6 +4,7 @@ export enum TherapistTransferRequestTopic {
   CREATED = 'therapist-transfer-request.created',
   UPDATED = 'therapist-transfer-request.updated',
   REMOVED = 'therapist-transfer-request.removed',
+  APPROVED = 'therapist-transfer-request.approved',
 }
 
 export const TherapistTransferRequestAuditTopic: Record<
