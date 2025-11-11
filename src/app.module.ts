@@ -34,6 +34,7 @@ import { TherapistExceptionModule } from './domain/therapists-exceptions/therapi
 import { ReflectionModule } from './domain/reflections/reflection.module';
 import { ExerciseModule } from './domain/exercises/exercise.module';
 import { TherapistTransferRequestModule } from './domain/therapists-transfer-requests/therapist-transfer-request.module';
+import { SessionModule } from './domain/sessions/session.module';
 
 @Module({})
 export class AppModule {
@@ -102,6 +103,7 @@ export class AppModule {
         ReflectionModule,
         ExerciseModule,
         TherapistTransferRequestModule,
+        SessionModule,
       ],
       controllers: [AppController],
       providers: [
