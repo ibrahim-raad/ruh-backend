@@ -36,6 +36,9 @@ import { ExerciseModule } from './domain/exercises/exercise.module';
 import { TherapistTransferRequestModule } from './domain/therapists-transfer-requests/therapist-transfer-request.module';
 import { SessionModule } from './domain/sessions/session.module';
 import { SessionNotesModule } from './domain/sessions-notes/session-notes.module';
+import { SessionReportModule } from './domain/sessions-reports/session-report.module';
+import { SessionAiSummaryModule } from './domain/sessions-ai-summary/session-ai-summary.module';
+import { TherapyCaseModule } from './domain/therapy-cases/therapy-case.module';
 
 @Module({})
 export class AppModule {
@@ -104,8 +107,11 @@ export class AppModule {
         ReflectionModule,
         ExerciseModule,
         TherapistTransferRequestModule,
+        TherapyCaseModule,
         SessionModule,
         SessionNotesModule,
+        SessionAiSummaryModule,
+        SessionReportModule,
       ],
       controllers: [AppController],
       providers: [
