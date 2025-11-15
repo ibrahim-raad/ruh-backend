@@ -41,6 +41,7 @@ import { SessionAiSummaryModule } from './domain/sessions-ai-summary/session-ai-
 import { TherapyCaseModule } from './domain/therapy-cases/therapy-case.module';
 import { SessionChatModule } from './domain/sessions-chats/session-chat.module';
 import { ChatMessageModule } from './domain/chats-messages/chat-message.module';
+import { AssignedExerciseModule } from './domain/assigned-exercises/assigned-exercise.module';
 
 @Module({})
 export class AppModule {
@@ -116,6 +117,7 @@ export class AppModule {
         SessionReportModule,
         SessionChatModule,
         ChatMessageModule,
+        AssignedExerciseModule,
       ],
       controllers: [AppController],
       providers: [
