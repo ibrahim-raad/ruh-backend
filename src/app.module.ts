@@ -43,6 +43,7 @@ import { SessionChatModule } from './domain/sessions-chats/session-chat.module';
 import { ChatMessageModule } from './domain/chats-messages/chat-message.module';
 import { AssignedExerciseModule } from './domain/assigned-exercises/assigned-exercise.module';
 import { NotificationModule } from './domain/notifications/notification.module';
+import { PatientFileDocumentModule } from './domain/patients-files-documents/patient-file-document.module';
 
 @Module({})
 export class AppModule {
@@ -120,6 +121,7 @@ export class AppModule {
         ChatMessageModule,
         AssignedExerciseModule,
         NotificationModule,
+        PatientFileDocumentModule,
       ],
       controllers: [AppController],
       providers: [
