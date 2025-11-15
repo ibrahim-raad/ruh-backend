@@ -1,0 +1,8 @@
+export enum NotificationSubscriptionTopic {
+  ADMINS = 'ADMINS',
+  THERAPISTS = 'THERAPISTS',
+  PATIENTS = 'PATIENTS',
+  PROMOTIONS = 'PROMOTIONS',
+  ANNOUNCEMENTS = 'ANNOUNCEMENTS',
+  OTHER = 'OTHER',
+}
