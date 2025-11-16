@@ -177,7 +177,10 @@ export class UserController {
   @ApiBearerAuth()
   @UseFilters(MulterExceptionFilter)
   @UseInterceptors(
-    FileInterceptor('file', multerConfig('profile-images', '5MB')),
+    FileInterceptor(
+      'file',
+      multerConfig('profile-images', '5MB', /\.(jpg|jpeg|png|gif|avif|webp)$/i),
+    ),
   )
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -211,7 +214,10 @@ export class UserController {
   @ApiBearerAuth()
   @UseFilters(MulterExceptionFilter)
   @UseInterceptors(
-    FileInterceptor('file', multerConfig('profile-images', '5MB')),
+    FileInterceptor(
+      'file',
+      multerConfig('profile-images', '5MB', /\.(jpg|jpeg|png|gif|avif|webp)$/i),
+    ),
   )
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -256,10 +262,7 @@ export class UserController {
   @Delete('me/profile-image')
   @ApiBearerAuth()
   @ApiException(() => [NotFoundException])
-  async deleteMyProfileImage(
-    @Param('id', ParseUUIDPipe) id: string,
-    @CurrentUser() user: User,
-  ): Promise<UserOutput> {
+  async deleteMyProfileImage(@CurrentUser() user: User): Promise<UserOutput> {
     const updated = await this.service.deleteProfileImage({
       id: user.id,
     });
