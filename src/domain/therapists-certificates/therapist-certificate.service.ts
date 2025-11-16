@@ -8,6 +8,8 @@ import { SearchTherapistCertificate } from './dto/search-therapist-certificate.d
 import { TherapistCertificateAudit } from './entities/therapist-certificate.entity.audit';
 import { TherapistService } from '../therapists/therapist.service';
 import { SpecializationService } from '../specializations/specialization.service';
+import * as path from 'path';
+import { FindOptionsWhere } from 'typeorm';
 
 @Injectable()
 export class TherapistCertificateService extends CrudService<
@@ -93,5 +95,37 @@ export class TherapistCertificateService extends CrudService<
 
     const items = await this.all(where, criteria, criteria.deleted_at);
     return items;
+  }
+
+  public async replaceFile(
+    findOptions: FindOptionsWhere<TherapistCertificate>,
+    file: Express.Multer.File,
+  ): Promise<TherapistCertificate> {
+    const existing = await this.one(findOptions);
+    const uploadsPrefix = '/uploads/';
+    if (existing.file_url?.startsWith(uploadsPrefix)) {
+      const filePath = path.join(
+        process.cwd(),
+        existing.file_url.replace(uploadsPrefix, 'uploads/'),
+      );
+      this.removeFile(filePath);
+    }
+    existing.file_url = `/uploads/therapists/certificates/${file.filename}`;
+    return this.repository.save(existing);
+  }
+
+  public async permanentDelete(
+    criteria: FindOptionsWhere<TherapistCertificate>,
+  ): Promise<{ message: string }> {
+    const existing = await this.one(criteria);
+    const uploadsPrefix = '/uploads/';
+    if (existing.file_url?.startsWith(uploadsPrefix)) {
+      const filePath = path.join(
+        process.cwd(),
+        existing.file_url.replace(uploadsPrefix, 'uploads/'),
+      );
+      this.removeFile(filePath);
+    }
+    return super.permanentDelete(criteria);
   }
 }

@@ -14,8 +14,16 @@ import {
   Delete,
   ParseUUIDPipe,
   UseGuards,
+  UploadedFile,
+  UseFilters,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiExtraModels, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiExtraModels,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ApiException, ApiPageResponse } from 'src/domain/shared/decorators';
 import { PageOutput } from 'src/domain/shared/page.output';
 import { TherapistCertificateService } from './therapist-certificate.service';
@@ -34,6 +42,10 @@ import { UserRole } from '../users/shared/user-role.enum';
 import { Roles } from 'src/guards/decorators/permissions.decorator';
 import { CurrentUser } from '../shared/decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerConfig } from 'src/utils/multer-config.utils';
+import { MulterExceptionFilter } from 'src/filters/multer-exception.filter';
+import { TherapistCertificate } from './entities/therapist-certificate.entity';
 
 @ApiTags('Therapists Certificates')
 @Controller('/api/v1/therapists-certificates')
@@ -48,13 +60,44 @@ export class TherapistCertificateController {
   @Post()
   @Roles(UserRole.THERAPIST)
   @ApiBearerAuth()
-  @UseInterceptors(ClassSerializerInterceptor)
+  @UseInterceptors(
+    ClassSerializerInterceptor,
+    FileInterceptor(
+      'file',
+      multerConfig(
+        'therapists/certificates',
+        '10MB',
+        /\.(pdf|jpg|jpeg|png|webp)$/i,
+      ),
+    ),
+  )
+  @UseFilters(MulterExceptionFilter)
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        title: { type: 'string' },
+        issuer: { type: 'string' },
+        issued_date: { type: 'string', format: 'date-time' },
+        description: { type: 'string' },
+        specialization_id: { type: 'string', format: 'uuid' },
+        file: { type: 'string', format: 'binary' },
+      },
+      required: ['title', 'issuer', 'issued_date', 'file'],
+    },
+  })
   @ApiException(() => [BadRequestException, ConflictException])
   async create(
     @Body() input: CreateTherapistCertificate,
     @CurrentUser() user: User,
+    @UploadedFile() file: Express.Multer.File,
   ): Promise<TherapistCertificateOutput> {
+    if (!file) {
+      throw new BadRequestException('File is required');
+    }
     const entity = this.mapper.toModel(input);
+    entity.file_url = `/uploads/therapists/certificates/${file.filename}`;
     const created = await this.service.create({ ...entity, userId: user.id });
     return this.mapper.toOutput(created);
   }
@@ -115,6 +158,46 @@ export class TherapistCertificateController {
     });
     const entity = this.mapper.toModel(input, existing);
     const updated = await this.service.update(existing, entity);
+    return this.mapper.toOutput(updated);
+  }
+
+  @Patch(':id/file')
+  @Roles(UserRole.THERAPIST)
+  @ApiBearerAuth()
+  @UseFilters(MulterExceptionFilter)
+  @UseInterceptors(
+    FileInterceptor(
+      'file',
+      multerConfig(
+        'therapists/certificates',
+        '10MB',
+        /\.(pdf|jpg|jpeg|png|webp)$/i,
+      ),
+    ),
+  )
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+      },
+      required: ['file'],
+    },
+  })
+  @ApiException(() => [NotFoundException, BadRequestException])
+  async replaceFile(
+    @Param('id', ParseUUIDPipe) id: string,
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser() user: User,
+  ): Promise<TherapistCertificateOutput> {
+    if (!file) {
+      throw new BadRequestException('File is required');
+    }
+    const updated = await this.service.replaceFile(
+      { id, therapist: { user: { id: user.id } } },
+      file,
+    );
     return this.mapper.toOutput(updated);
   }
 

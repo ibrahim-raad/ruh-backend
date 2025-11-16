@@ -9,6 +9,8 @@ import { PatientFileDocumentAudit } from './entities/patient-file-document.entit
 import { User } from '../users/entities/user.entity';
 import { UserRole } from '../users/shared/user-role.enum';
 import { TherapyCaseService } from '../therapy-cases/therapy-case.service';
+import * as path from 'path';
+import { FindOptionsWhere } from 'typeorm';
 
 @Injectable()
 export class PatientFileDocumentService extends CrudService<
@@ -107,5 +109,37 @@ export class PatientFileDocumentService extends CrudService<
         break;
     }
     return accessCondition;
+  }
+
+  public async replaceFile(
+    findOptions: FindOptionsWhere<PatientFileDocument>,
+    file: Express.Multer.File,
+  ): Promise<PatientFileDocument> {
+    const existing = await this.one(findOptions);
+    const uploadsPrefix = '/uploads/';
+    if (existing.file_url?.startsWith(uploadsPrefix)) {
+      const filePath = path.join(
+        process.cwd(),
+        existing.file_url.replace(uploadsPrefix, 'uploads/'),
+      );
+      this.removeFile(filePath);
+    }
+    existing.file_url = `/uploads/patients/documents/${file.filename}`;
+    return this.repository.save(existing);
+  }
+
+  public async permanentDelete(
+    criteria: FindOptionsWhere<PatientFileDocument>,
+  ): Promise<{ message: string }> {
+    const existing = await this.one(criteria);
+    const uploadsPrefix = '/uploads/';
+    if (existing.file_url?.startsWith(uploadsPrefix)) {
+      const filePath = path.join(
+        process.cwd(),
+        existing.file_url.replace(uploadsPrefix, 'uploads/'),
+      );
+      this.removeFile(filePath);
+    }
+    return super.permanentDelete(criteria);
   }
 }

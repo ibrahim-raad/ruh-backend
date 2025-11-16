@@ -14,8 +14,16 @@ import {
   Delete,
   ParseUUIDPipe,
   UseGuards,
+  UploadedFile,
+  UseFilters,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiExtraModels, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiExtraModels,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ApiException, ApiPageResponse } from 'src/domain/shared/decorators';
 import { PageOutput } from 'src/domain/shared/page.output';
 import { PatientFileDocumentService } from './patient-file-document.service';
@@ -34,6 +42,9 @@ import { UserRole } from '../users/shared/user-role.enum';
 import { Roles } from 'src/guards/decorators/permissions.decorator';
 import { CurrentUser } from '../shared/decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerConfig } from 'src/utils/multer-config.utils';
+import { MulterExceptionFilter } from 'src/filters/multer-exception.filter';
 
 @ApiTags('PatientsFilesDocuments')
 @Controller('/api/v1/patients-files-documents/:therapyCaseId')
@@ -48,18 +59,46 @@ export class PatientFileDocumentController {
   @Post()
   @Roles([UserRole.THERAPIST, UserRole.PATIENT])
   @ApiBearerAuth()
-  @UseInterceptors(ClassSerializerInterceptor)
+  @UseInterceptors(
+    ClassSerializerInterceptor,
+    FileInterceptor(
+      'file',
+      multerConfig(
+        'patients/documents',
+        '50MB',
+        /\.(jpg|jpeg|png|gif|webp|avif|pdf|doc|docx|mp4|mov|webm|mkv)$/i,
+      ),
+    ),
+  )
+  @UseFilters(MulterExceptionFilter)
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        description: { type: 'string' },
+        type: { type: 'string', enum: ['REPORT', 'LAB_RESULT', 'OTHER'] },
+        file: { type: 'string', format: 'binary' },
+      },
+      required: ['type', 'file'],
+    },
+  })
   @ApiException(() => [BadRequestException, ConflictException])
   async create(
     @Param('therapyCaseId', ParseUUIDPipe) therapyCaseId: string,
     @Body() input: CreatePatientFileDocument,
     @CurrentUser() user: User,
+    @UploadedFile() file: Express.Multer.File,
   ): Promise<PatientFileDocumentOutput> {
+    if (!file) {
+      throw new BadRequestException('File is required');
+    }
     const entity = this.mapper.toModel({
       ...input,
       therapyCaseId,
       isUploadedByPatient: user.role === UserRole.PATIENT,
     });
+    entity.file_url = `/uploads/patients/documents/${file.filename}`;
     const created = await this.service.create(entity);
     return this.mapper.toOutput(created);
   }
@@ -123,6 +162,47 @@ export class PatientFileDocumentController {
     });
     const entity = this.mapper.toModel(input, existing);
     const updated = await this.service.update(existing, entity);
+    return this.mapper.toOutput(updated);
+  }
+
+  @Patch(':id/file')
+  @Roles([UserRole.THERAPIST, UserRole.PATIENT])
+  @ApiBearerAuth()
+  @UseFilters(MulterExceptionFilter)
+  @UseInterceptors(
+    FileInterceptor(
+      'file',
+      multerConfig(
+        'patients/documents',
+        '50MB',
+        /\.(jpg|jpeg|png|gif|webp|avif|pdf|doc|docx|mp4|mov|webm|mkv)$/i,
+      ),
+    ),
+  )
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+      },
+      required: ['file'],
+    },
+  })
+  @ApiException(() => [NotFoundException, BadRequestException])
+  async replaceFile(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() user: User,
+    @Param('therapyCaseId', ParseUUIDPipe) therapyCaseId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<PatientFileDocumentOutput> {
+    if (!file) {
+      throw new BadRequestException('File is required');
+    }
+    const updated = await this.service.replaceFile(
+      { id, ...this.service.accessCondition(user, therapyCaseId) },
+      file,
+    );
     return this.mapper.toOutput(updated);
   }
 
