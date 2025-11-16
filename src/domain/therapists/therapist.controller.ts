@@ -29,6 +29,8 @@ import { AuditSearchInput } from '../shared/dto/audit-search.dto';
 import { AuditOutput } from '../shared/dto/audit-output.dto';
 import { User } from '../users/entities/user.entity';
 import { CurrentUser } from '../shared/decorators/current-user.decorator';
+import { UserRole } from '../users/shared/user-role.enum';
+import { Roles } from 'src/guards/decorators/permissions.decorator';
 
 @ApiTags('Therapists')
 @Controller('/api/v1/therapists')
@@ -86,6 +88,7 @@ export class TherapistController {
   }
 
   @Patch(':id')
+  @Roles([UserRole.THERAPIST, UserRole.ADMIN])
   @ApiBearerAuth()
   @ApiException(() => [
     NotFoundException,
@@ -95,8 +98,12 @@ export class TherapistController {
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() input: UpdateTherapist,
+    @CurrentUser() user: User,
   ): Promise<TherapistOutput> {
-    const existing = await this.service.one({ id });
+    const existing = await this.service.one({
+      id,
+      ...(user.role === UserRole.THERAPIST && { user: { id: user.id } }),
+    });
     const entity = this.mapper.toModel(input, existing);
     const updated = await this.service.update(existing, entity);
     return this.mapper.toOutput(updated);

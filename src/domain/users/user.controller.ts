@@ -10,8 +10,18 @@ import {
   NotFoundException,
   Delete,
   ParseUUIDPipe,
+  UseInterceptors,
+  UploadedFile,
+  UseFilters,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiExtraModels, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiExtraModels,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ApiException, ApiPageResponse } from 'src/domain/shared/decorators';
 import { PageOutput } from 'src/domain/shared/page.output';
 import { UserService } from './user.service';
@@ -25,9 +35,18 @@ import { DateRangeInput } from '../shared/dto/date-range.dto';
 import { ApiNestedQuery } from '../shared/decorators/api-range-property.decorator';
 import { AuditSearchInput } from '../shared/dto/audit-search.dto';
 import { AuditOutput } from '../shared/dto/audit-output.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerConfig } from 'src/utils/multer-config.utils';
+import { MulterExceptionFilter } from 'src/filters/multer-exception.filter';
+import { RolesGuard } from 'src/guards/permissions.guard';
+import { UserRole } from './shared/user-role.enum';
+import { Roles } from 'src/guards/decorators/permissions.decorator';
+import { CurrentUser } from '../shared/decorators/current-user.decorator';
+import { User } from './entities/user.entity';
 
 @ApiTags('Users')
 @Controller('/api/v1/users')
+@UseGuards(RolesGuard)
 @ApiExtraModels(PageOutput<UserOutput>)
 export class UserController {
   constructor(
@@ -35,8 +54,8 @@ export class UserController {
     private readonly mapper: UserMapper,
   ) {}
 
-  // TODO: add admin role check
   @Get()
+  @Roles(UserRole.ADMIN)
   @ApiBearerAuth()
   @ApiPageResponse(UserOutput)
   @ApiException(() => [BadRequestException])
@@ -49,8 +68,9 @@ export class UserController {
       items: data.map((item) => this.mapper.toOutput(item)),
     };
   }
-  // TODO: add admin role check
+
   @Get('history')
+  @Roles(UserRole.ADMIN)
   @ApiBearerAuth()
   @ApiException(() => [NotFoundException])
   @ApiNestedQuery({ name: 'date', type: DateRangeInput })
@@ -97,8 +117,8 @@ export class UserController {
     return this.mapper.toOutput(found);
   }
 
-  // TODO: add admin role check
   @Get(':id/history')
+  @Roles([UserRole.ADMIN])
   @ApiBearerAuth()
   @ApiException(() => [NotFoundException])
   @ApiNestedQuery({ name: 'date', type: DateRangeInput })
@@ -134,8 +154,8 @@ export class UserController {
     return { message: 'User deleted' };
   }
 
-  // TODO: add admin role check
   @Delete('permanent/:id')
+  @Roles(UserRole.ADMIN)
   @ApiBearerAuth()
   @ApiException(() => [NotFoundException])
   async permanentDelete(
@@ -145,11 +165,104 @@ export class UserController {
     return { message: 'User permanently deleted' };
   }
 
-  // TODO: add admin role check
   @Patch('restore/:id')
+  @Roles(UserRole.ADMIN)
   @ApiBearerAuth()
   async restore(@Param('id', ParseUUIDPipe) id: string): Promise<UserOutput> {
     const restored = await this.service.restore({ id });
     return this.mapper.toOutput(restored);
+  }
+
+  @Patch('me/profile-image')
+  @ApiBearerAuth()
+  @UseFilters(MulterExceptionFilter)
+  @UseInterceptors(
+    FileInterceptor('file', multerConfig('profile-images', '5MB')),
+  )
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+      },
+      required: ['file'],
+    },
+  })
+  @ApiException(() => [NotFoundException, BadRequestException])
+  async uploadMyProfileImage(
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser() user: User,
+  ): Promise<UserOutput> {
+    if (!file) {
+      throw new BadRequestException('File is required');
+    }
+    const updated = await this.service.setProfileImage(
+      {
+        id: user.id,
+      },
+      file,
+    );
+    return this.mapper.toOutput(updated);
+  }
+
+  @Patch(':id/profile-image')
+  @Roles([UserRole.ADMIN])
+  @ApiBearerAuth()
+  @UseFilters(MulterExceptionFilter)
+  @UseInterceptors(
+    FileInterceptor('file', multerConfig('profile-images', '5MB')),
+  )
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+      },
+      required: ['file'],
+    },
+  })
+  @ApiException(() => [NotFoundException, BadRequestException])
+  async uploadProfileImage(
+    @Param('id', ParseUUIDPipe) id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<UserOutput> {
+    if (!file) {
+      throw new BadRequestException('File is required');
+    }
+    const updated = await this.service.setProfileImage(
+      {
+        id,
+      },
+      file,
+    );
+    return this.mapper.toOutput(updated);
+  }
+
+  @Delete(':id/profile-image')
+  @Roles([UserRole.ADMIN])
+  @ApiBearerAuth()
+  @ApiException(() => [NotFoundException])
+  async deleteProfileImage(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<UserOutput> {
+    const updated = await this.service.deleteProfileImage({
+      id,
+    });
+    return this.mapper.toOutput(updated);
+  }
+
+  @Delete('me/profile-image')
+  @ApiBearerAuth()
+  @ApiException(() => [NotFoundException])
+  async deleteMyProfileImage(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() user: User,
+  ): Promise<UserOutput> {
+    const updated = await this.service.deleteProfileImage({
+      id: user.id,
+    });
+    return this.mapper.toOutput(updated);
   }
 }

@@ -18,6 +18,7 @@ import { InRange } from '../shared/find-operator.extensions';
 import { CrudService } from '../shared/abstract-crud.service';
 import { Patient } from '../patients/entities/patient.entity';
 import { Therapist } from '../therapists/entities/therapist.entity';
+import * as path from 'path';
 
 @Injectable()
 export class UserService extends CrudService<User, UserAudit> {
@@ -96,5 +97,39 @@ export class UserService extends CrudService<User, UserAudit> {
   public async find(criteria: SearchUser): Promise<User[]> {
     const where = this.generateWhere(criteria);
     return this.all(where, criteria, criteria.deleted_at);
+  }
+
+  public async setProfileImage(
+    findOptions: FindOptionsWhere<User>,
+    file: Express.Multer.File,
+  ): Promise<User> {
+    const user = await this.one(findOptions);
+    const uploadsPrefix = '/uploads/';
+    if (user.profile_url?.startsWith(uploadsPrefix)) {
+      const filePath = path.join(
+        process.cwd(),
+        user.profile_url.replace(uploadsPrefix, 'uploads/'),
+      );
+      this.removeFile(filePath);
+    }
+    const url = `/uploads/profile-images/${file.filename}`;
+    user.profile_url = url;
+    return this.repository.save(user);
+  }
+
+  public async deleteProfileImage(
+    findOptions: FindOptionsWhere<User>,
+  ): Promise<User> {
+    const user = await this.one(findOptions);
+    const uploadsPrefix = '/uploads/';
+    if (user.profile_url?.startsWith(uploadsPrefix)) {
+      const filePath = path.join(
+        process.cwd(),
+        user.profile_url.replace(uploadsPrefix, 'uploads/'),
+      );
+      this.removeFile(filePath);
+    }
+    user.profile_url = undefined;
+    return this.repository.save(user);
   }
 }
