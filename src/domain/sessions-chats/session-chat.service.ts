@@ -8,6 +8,7 @@ import { SearchSessionChat } from './dto/search-session-chat.dto';
 import { SessionChatAudit } from './entities/session-chat.entity.audit';
 import { User } from '../users/entities/user.entity';
 import { UserRole } from '../users/shared/user-role.enum';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class SessionChatService extends CrudService<
@@ -39,7 +40,7 @@ export class SessionChatService extends CrudService<
     criteria: SearchSessionChat,
     session_id: string,
     user: User,
-  ): Promise<SessionChat[]> {
+  ): Promise<FindOutputDto<SessionChat>> {
     const accessCondition = this.getAccessCondition(user, session_id);
 
     const where = {
@@ -53,8 +54,7 @@ export class SessionChatService extends CrudService<
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 
   public getAccessCondition(

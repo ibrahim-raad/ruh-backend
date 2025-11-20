@@ -7,6 +7,7 @@ import { Therapist } from './entities/therapist.entity';
 import { SearchTherapist } from './dto/search-therapist.dto';
 import { TherapistAudit } from './entities/therapist.entity.audit';
 import { UserService } from '../users/user.service';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class TherapistService extends CrudService<Therapist, TherapistAudit> {
@@ -33,7 +34,9 @@ export class TherapistService extends CrudService<Therapist, TherapistAudit> {
     return super.update(old, input);
   }
 
-  public async find(criteria: SearchTherapist): Promise<Therapist[]> {
+  public async find(
+    criteria: SearchTherapist,
+  ): Promise<FindOutputDto<Therapist>> {
     const where = {
       ...(isDefined(criteria.name) && {
         name: ILike('%' + criteria.name + '%'),
@@ -41,7 +44,6 @@ export class TherapistService extends CrudService<Therapist, TherapistAudit> {
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

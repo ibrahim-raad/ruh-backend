@@ -65,10 +65,11 @@ export class SessionReportController {
     @Query() criteria: SearchSessionReport,
     @CurrentUser() user: User,
   ): Promise<PageOutput<SessionReportOutput>> {
-    const data = await this.service.find(criteria, user);
+    const { items, total } = await this.service.find(criteria, user);
     return {
-      hasNext: data.length === criteria.limit,
-      items: data.map((item) => this.mapper.toOutput(item)),
+      hasNext: items.length === criteria.limit,
+      items: items.map((item) => this.mapper.toOutput(item)),
+      total,
     };
   }
 
@@ -80,7 +81,8 @@ export class SessionReportController {
   public async historyAll(
     @Query() criteria: AuditSearchInput,
   ): Promise<PageOutput<AuditOutput<SessionReportOutput>>> {
-    const auditRecords = await this.service.historyAll(criteria);
+    const { items: auditRecords, total } =
+      await this.service.historyAll(criteria);
 
     const items = auditRecords.map((record) => ({
       ...record,
@@ -92,6 +94,7 @@ export class SessionReportController {
     return {
       hasNext: items.length === criteria.limit,
       items,
+      total,
     };
   }
 
@@ -156,7 +159,7 @@ export class SessionReportController {
     @Param('sessionId', ParseUUIDPipe) sessionId: string,
     @Query() criteria: AuditSearchInput,
   ): Promise<PageOutput<AuditOutput<SessionReportOutput>>> {
-    const auditRecords = await this.service.history({
+    const { items: auditRecords, total } = await this.service.history({
       exist: { session: { id: sessionId } },
       ...criteria,
     });
@@ -171,6 +174,7 @@ export class SessionReportController {
     return {
       hasNext: items.length === criteria.limit,
       items,
+      total,
     };
   }
 

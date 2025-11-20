@@ -6,6 +6,7 @@ import { isDefined } from 'class-validator';
 import { Language } from './entities/language.entity';
 import { SearchLanguage } from './dto/search-language.dto';
 import { LanguageAudit } from './entities/language.entity.audit';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class LanguageService extends CrudService<Language, LanguageAudit> {
@@ -18,7 +19,9 @@ export class LanguageService extends CrudService<Language, LanguageAudit> {
     super(Language, repository, auditRepository, {});
   }
 
-  public async find(criteria: SearchLanguage): Promise<Language[]> {
+  public async find(
+    criteria: SearchLanguage,
+  ): Promise<FindOutputDto<Language>> {
     const where = {
       ...(isDefined(criteria.name) && {
         name: ILike('%' + criteria.name + '%'),
@@ -29,7 +32,6 @@ export class LanguageService extends CrudService<Language, LanguageAudit> {
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

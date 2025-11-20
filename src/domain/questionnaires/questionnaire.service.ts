@@ -13,6 +13,7 @@ import { isDefined } from 'class-validator';
 import { Questionnaire } from './entities/questionnaire.entity';
 import { SearchQuestionnaire } from './dto/search-questionnaire.dto';
 import { QuestionnaireAudit } from './entities/questionnaire.entity.audit';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class QuestionnaireService extends CrudService<
@@ -28,7 +29,9 @@ export class QuestionnaireService extends CrudService<
     super(Questionnaire, repository, auditRepository, {});
   }
 
-  public async find(criteria: SearchQuestionnaire): Promise<Questionnaire[]> {
+  public async find(
+    criteria: SearchQuestionnaire,
+  ): Promise<FindOutputDto<Questionnaire>> {
     const where = {
       ...(isDefined(criteria.title) && {
         title: ILike('%' + criteria.title + '%'),
@@ -45,12 +48,6 @@ export class QuestionnaireService extends CrudService<
       ...(criteria.with_created_by && { created_by: true }),
     };
 
-    const items = await this.all(
-      where,
-      criteria,
-      criteria.deleted_at,
-      relations,
-    );
-    return items;
+    return this.all(where, criteria, criteria.deleted_at, relations);
   }
 }

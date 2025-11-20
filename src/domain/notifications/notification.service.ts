@@ -7,6 +7,7 @@ import { Notification } from './entities/notification.entity';
 import { SearchNotification } from './dto/search-notification.dto';
 import { NotificationAudit } from './entities/notification.entity.audit';
 import { UserService } from '../users/user.service';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class NotificationService extends CrudService<
@@ -32,7 +33,9 @@ export class NotificationService extends CrudService<
     return super.create({ ...input, user });
   }
 
-  public async find(criteria: SearchNotification): Promise<Notification[]> {
+  public async find(
+    criteria: SearchNotification,
+  ): Promise<FindOutputDto<Notification>> {
     const where = {
       ...(isDefined(criteria.title) && {
         title: ILike('%' + criteria.title + '%'),
@@ -47,7 +50,6 @@ export class NotificationService extends CrudService<
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

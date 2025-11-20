@@ -9,6 +9,7 @@ import { AdminAudit } from './entities/admin.entity.audit';
 import { UserService } from '../users/user.service';
 import { DataSource } from 'typeorm';
 import { User } from '../users/entities/user.entity';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class AdminService extends CrudService<Admin, AdminAudit> {
@@ -47,7 +48,7 @@ export class AdminService extends CrudService<Admin, AdminAudit> {
     return super.update(old, input);
   }
 
-  public async find(criteria: SearchAdmin): Promise<Admin[]> {
+  public async find(criteria: SearchAdmin): Promise<FindOutputDto<Admin>> {
     const userWhere = this.userService.generateWhere(criteria);
     const isEmpty = Object.keys(userWhere).length > 0;
     const where = {
@@ -62,7 +63,6 @@ export class AdminService extends CrudService<Admin, AdminAudit> {
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

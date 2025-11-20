@@ -12,6 +12,7 @@ import { PatientService } from '../patients/patient.service';
 import { QuestionService } from '../questions/question.service';
 import { PossibleAnswerService } from '../possible-answers/possible-answer.service';
 import { SESSION_USER_KEY } from 'src/app.constants';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class PatientAnswerService extends CrudService<
@@ -67,7 +68,9 @@ export class PatientAnswerService extends CrudService<
     });
   }
 
-  public async find(criteria: SearchPatientAnswer): Promise<PatientAnswer[]> {
+  public async find(
+    criteria: SearchPatientAnswer,
+  ): Promise<FindOutputDto<PatientAnswer>> {
     const where = {
       ...(isDefined(criteria.patient_id) && {
         patient: { id: criteria.patient_id },
@@ -91,7 +94,6 @@ export class PatientAnswerService extends CrudService<
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

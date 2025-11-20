@@ -6,6 +6,7 @@ import { isDefined } from 'class-validator';
 import { Country } from './entities/country.entity';
 import { SearchCountry } from './dto/search-country.dto';
 import { CountryAudit } from './entities/country.entity.audit';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class CountryService extends CrudService<Country, CountryAudit> {
@@ -18,7 +19,7 @@ export class CountryService extends CrudService<Country, CountryAudit> {
     super(Country, repository, auditRepository, {});
   }
 
-  public async find(criteria: SearchCountry): Promise<Country[]> {
+  public async find(criteria: SearchCountry): Promise<FindOutputDto<Country>> {
     const where = {
       ...(isDefined(criteria.name) && { name: ILike(`%${criteria.name}%`) }),
       ...(criteria.deleted_at && {
@@ -26,7 +27,6 @@ export class CountryService extends CrudService<Country, CountryAudit> {
       }),
     };
 
-    const countries = await this.all(where, criteria, criteria.deleted_at);
-    return countries;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

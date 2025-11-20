@@ -9,6 +9,7 @@ import { PaymentAudit } from './entities/payment.entity.audit';
 import { SessionService } from '../sessions/session.service';
 import { TherapistService } from '../therapists/therapist.service';
 import { PatientService } from '../patients/patient.service';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class PaymentService extends CrudService<Payment, PaymentAudit> {
@@ -52,7 +53,7 @@ export class PaymentService extends CrudService<Payment, PaymentAudit> {
     return super.create(entity);
   }
 
-  public async find(criteria: SearchPayment): Promise<Payment[]> {
+  public async find(criteria: SearchPayment): Promise<FindOutputDto<Payment>> {
     const where = {
       ...(isDefined(criteria.provider_payment_intent_id) && {
         provider_payment_intent_id: criteria.provider_payment_intent_id,
@@ -66,7 +67,6 @@ export class PaymentService extends CrudService<Payment, PaymentAudit> {
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

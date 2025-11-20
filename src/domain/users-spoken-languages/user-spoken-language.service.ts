@@ -8,6 +8,7 @@ import { SearchUserSpokenLanguage } from './dto/search-user-spoken-language.dto'
 import { UserSpokenLanguageAudit } from './entities/user-spoken-language.entity.audit';
 import { LanguageService } from '../languages/language.service';
 import { DataSource } from 'typeorm';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class UserSpokenLanguageService extends CrudService<
@@ -76,7 +77,7 @@ export class UserSpokenLanguageService extends CrudService<
 
   public async find(
     criteria: SearchUserSpokenLanguage,
-  ): Promise<UserSpokenLanguage[]> {
+  ): Promise<FindOutputDto<UserSpokenLanguage>> {
     const where = {
       ...(isDefined(criteria.user_id) && {
         user: { id: criteria.user_id },
@@ -96,7 +97,6 @@ export class UserSpokenLanguageService extends CrudService<
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

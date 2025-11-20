@@ -7,6 +7,7 @@ import { Question } from './entities/question.entity';
 import { SearchQuestion } from './dto/search-question.dto';
 import { QuestionAudit } from './entities/question.entity.audit';
 import { QuestionnaireService } from '../questionnaires/questionnaire.service';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class QuestionService extends CrudService<Question, QuestionAudit> {
@@ -45,7 +46,7 @@ export class QuestionService extends CrudService<Question, QuestionAudit> {
   private async getOrdersForQuestionnaire(
     questionnaire_id: string,
   ): Promise<number[]> {
-    const questions = await this.all(
+    const { items: questions } = await this.all(
       {
         questionnaire: { id: questionnaire_id },
       },
@@ -62,7 +63,9 @@ export class QuestionService extends CrudService<Question, QuestionAudit> {
     return questions.map((question) => question.order);
   }
 
-  public async find(criteria: SearchQuestion): Promise<Question[]> {
+  public async find(
+    criteria: SearchQuestion,
+  ): Promise<FindOutputDto<Question>> {
     const where = {
       ...(isDefined(criteria.question) && {
         question: ILike('%' + criteria.question + '%'),
@@ -74,7 +77,6 @@ export class QuestionService extends CrudService<Question, QuestionAudit> {
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

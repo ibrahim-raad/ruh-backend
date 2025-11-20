@@ -10,6 +10,7 @@ import { TherapistService } from '../therapists/therapist.service';
 import { ClsService } from 'nestjs-cls';
 import { SESSION_USER_KEY } from 'src/app.constants';
 import { User } from '../users/entities/user.entity';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class TherapistExceptionService extends CrudService<
@@ -48,7 +49,7 @@ export class TherapistExceptionService extends CrudService<
 
   public async find(
     criteria: SearchTherapistException,
-  ): Promise<TherapistException[]> {
+  ): Promise<FindOutputDto<TherapistException>> {
     const where = {
       ...(isDefined(criteria.therapist_id) && {
         therapist: { id: criteria.therapist_id },
@@ -62,7 +63,6 @@ export class TherapistExceptionService extends CrudService<
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

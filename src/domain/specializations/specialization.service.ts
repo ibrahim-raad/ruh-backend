@@ -6,6 +6,7 @@ import { isDefined } from 'class-validator';
 import { Specialization } from './entities/specialization.entity';
 import { SearchSpecialization } from './dto/search-specialization.dto';
 import { SpecializationAudit } from './entities/specialization.entity.audit';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class SpecializationService extends CrudService<
@@ -21,7 +22,9 @@ export class SpecializationService extends CrudService<
     super(Specialization, repository, auditRepository, {});
   }
 
-  public async find(criteria: SearchSpecialization): Promise<Specialization[]> {
+  public async find(
+    criteria: SearchSpecialization,
+  ): Promise<FindOutputDto<Specialization>> {
     const where = {
       ...(isDefined(criteria.name) && {
         name: ILike('%' + criteria.name + '%'),
@@ -32,7 +35,6 @@ export class SpecializationService extends CrudService<
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

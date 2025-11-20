@@ -8,6 +8,7 @@ import { SearchTherapyCase } from './dto/search-therapy-case.dto';
 import { TherapyCaseAudit } from './entities/therapy-case.entity.audit';
 import { PatientService } from '../patients/patient.service';
 import { TherapistService } from '../therapists/therapist.service';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class TherapyCaseService extends CrudService<
@@ -66,7 +67,9 @@ export class TherapyCaseService extends CrudService<
     return super.update(old, entity);
   }
 
-  public async find(criteria: SearchTherapyCase): Promise<TherapyCase[]> {
+  public async find(
+    criteria: SearchTherapyCase,
+  ): Promise<FindOutputDto<TherapyCase>> {
     const where = {
       ...(isDefined(criteria.patient_id) && {
         patient_id: criteria.patient_id,
@@ -89,7 +92,6 @@ export class TherapyCaseService extends CrudService<
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

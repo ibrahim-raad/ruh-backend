@@ -52,10 +52,11 @@ export class TherapistAvailabilityController {
   public async list(
     @Query() criteria: SearchTherapistAvailability,
   ): Promise<PageOutput<TherapistAvailabilityOutput>> {
-    const data = await this.service.find(criteria);
+    const { items, total } = await this.service.find(criteria);
     return {
-      hasNext: data.length === criteria.limit,
-      items: data.map((item) => this.mapper.toOutput(item)),
+      hasNext: items.length === criteria.limit,
+      items: items.map((item) => this.mapper.toOutput(item)),
+      total,
     };
   }
 
@@ -67,7 +68,8 @@ export class TherapistAvailabilityController {
   public async historyAll(
     @Query() criteria: AuditSearchInput,
   ): Promise<PageOutput<AuditOutput<TherapistAvailabilityOutput>>> {
-    const auditRecords = await this.service.historyAll(criteria);
+    const { items: auditRecords, total } =
+      await this.service.historyAll(criteria);
 
     const items = auditRecords.map((record) => ({
       ...record,
@@ -79,6 +81,7 @@ export class TherapistAvailabilityController {
     return {
       hasNext: items.length === criteria.limit,
       items,
+      total,
     };
   }
 
@@ -119,7 +122,7 @@ export class TherapistAvailabilityController {
     @Param('id', ParseUUIDPipe) id: string,
     @Query() criteria: AuditSearchInput,
   ): Promise<PageOutput<AuditOutput<TherapistAvailabilityOutput>>> {
-    const auditRecords = await this.service.history({
+    const { items: auditRecords, total } = await this.service.history({
       exist: { id },
       ...criteria,
     });
@@ -134,6 +137,7 @@ export class TherapistAvailabilityController {
     return {
       hasNext: items.length === criteria.limit,
       items,
+      total,
     };
   }
 

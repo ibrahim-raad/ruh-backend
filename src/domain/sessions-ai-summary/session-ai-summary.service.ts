@@ -9,6 +9,7 @@ import { SessionAiSummaryAudit } from './entities/session-ai-summary.entity.audi
 import { SessionService } from '../sessions/session.service';
 import { User } from '../users/entities/user.entity';
 import { UserRole } from '../users/shared/user-role.enum';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class SessionAiSummaryService extends CrudService<
@@ -47,7 +48,7 @@ export class SessionAiSummaryService extends CrudService<
   public async find(
     criteria: SearchSessionAiSummary,
     user: User,
-  ): Promise<SessionAiSummary[]> {
+  ): Promise<FindOutputDto<SessionAiSummary>> {
     let accessCondition = {};
 
     switch (user.role) {
@@ -82,7 +83,6 @@ export class SessionAiSummaryService extends CrudService<
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

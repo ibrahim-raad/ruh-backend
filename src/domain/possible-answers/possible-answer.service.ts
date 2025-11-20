@@ -6,6 +6,7 @@ import { isDefined } from 'class-validator';
 import { PossibleAnswer } from './entities/possible-answer.entity';
 import { SearchPossibleAnswer } from './dto/search-possible-answer.dto';
 import { PossibleAnswerAudit } from './entities/possible-answer.entity.audit';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class PossibleAnswerService extends CrudService<
@@ -21,7 +22,9 @@ export class PossibleAnswerService extends CrudService<
     super(PossibleAnswer, repository, auditRepository, {});
   }
 
-  public async find(criteria: SearchPossibleAnswer): Promise<PossibleAnswer[]> {
+  public async find(
+    criteria: SearchPossibleAnswer,
+  ): Promise<FindOutputDto<PossibleAnswer>> {
     const where = {
       ...(isDefined(criteria.answer) && {
         answer: ILike('%' + criteria.answer + '%'),
@@ -42,7 +45,6 @@ export class PossibleAnswerService extends CrudService<
       }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

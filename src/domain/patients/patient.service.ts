@@ -7,6 +7,7 @@ import { Patient } from './entities/patient.entity';
 import { SearchPatient } from './dto/search-patient.dto';
 import { PatientAudit } from './entities/patient.entity.audit';
 import { UserService } from '../users/user.service';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class PatientService extends CrudService<Patient, PatientAudit> {
@@ -29,7 +30,7 @@ export class PatientService extends CrudService<Patient, PatientAudit> {
     return super.update(old, input);
   }
 
-  public async find(criteria: SearchPatient): Promise<Patient[]> {
+  public async find(criteria: SearchPatient): Promise<FindOutputDto<Patient>> {
     const userWhere = this.userService.generateWhere(criteria);
     const isEmpty = Object.keys(userWhere).length > 0;
     const where = {
@@ -47,7 +48,6 @@ export class PatientService extends CrudService<Patient, PatientAudit> {
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

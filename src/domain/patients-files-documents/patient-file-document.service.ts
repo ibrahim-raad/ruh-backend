@@ -11,6 +11,7 @@ import { UserRole } from '../users/shared/user-role.enum';
 import { TherapyCaseService } from '../therapy-cases/therapy-case.service';
 import * as path from 'path';
 import { FindOptionsWhere } from 'typeorm';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class PatientFileDocumentService extends CrudService<
@@ -53,7 +54,7 @@ export class PatientFileDocumentService extends CrudService<
     user: User,
     therapyCaseId: string,
     patientId?: string,
-  ): Promise<PatientFileDocument[]> {
+  ): Promise<FindOutputDto<PatientFileDocument>> {
     const accessCondition = this.accessCondition(
       user,
       therapyCaseId,
@@ -73,8 +74,7 @@ export class PatientFileDocumentService extends CrudService<
       ...accessCondition,
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 
   public accessCondition(

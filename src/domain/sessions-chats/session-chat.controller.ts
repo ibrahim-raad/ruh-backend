@@ -66,7 +66,7 @@ export class SessionChatController {
     @Query() criteria: SearchSessionChat,
     @CurrentUser() user: User,
   ): Promise<PageOutput<SessionChatOutput>> {
-    const data = await this.service.find(
+    const { items, total } = await this.service.find(
       {
         ...criteria,
       },
@@ -74,8 +74,9 @@ export class SessionChatController {
       user,
     );
     return {
-      hasNext: data.length === criteria.limit,
-      items: data.map((item) => this.mapper.toOutput(item)),
+      hasNext: items.length === criteria.limit,
+      items: items.map((item) => this.mapper.toOutput(item)),
+      total,
     };
   }
 
@@ -87,7 +88,8 @@ export class SessionChatController {
   public async historyAll(
     @Query() criteria: AuditSearchInput,
   ): Promise<PageOutput<AuditOutput<SessionChatOutput>>> {
-    const auditRecords = await this.service.historyAll(criteria);
+    const { items: auditRecords, total } =
+      await this.service.historyAll(criteria);
 
     const items = auditRecords.map((record) => ({
       ...record,
@@ -99,6 +101,7 @@ export class SessionChatController {
     return {
       hasNext: items.length === criteria.limit,
       items,
+      total,
     };
   }
 
@@ -124,7 +127,7 @@ export class SessionChatController {
     @Param('id', ParseUUIDPipe) id: string,
     @Query() criteria: AuditSearchInput,
   ): Promise<PageOutput<AuditOutput<SessionChatOutput>>> {
-    const auditRecords = await this.service.history({
+    const { items: auditRecords, total } = await this.service.history({
       exist: { id },
       ...criteria,
     });
@@ -139,6 +142,7 @@ export class SessionChatController {
     return {
       hasNext: items.length === criteria.limit,
       items,
+      total,
     };
   }
 

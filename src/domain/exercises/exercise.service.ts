@@ -9,6 +9,7 @@ import { ExerciseAudit } from './entities/exercise.entity.audit';
 import { User } from '../users/entities/user.entity';
 import { UserRole } from '../users/shared/user-role.enum';
 import { ExerciseVisibility } from './shared/exercise-visibility.enum';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class ExerciseService extends CrudService<Exercise, ExerciseAudit> {
@@ -26,7 +27,7 @@ export class ExerciseService extends CrudService<Exercise, ExerciseAudit> {
   public async find(
     criteria: SearchExercise,
     currentUser: User,
-  ): Promise<Exercise[]> {
+  ): Promise<FindOutputDto<Exercise>> {
     const isAdmin = currentUser.role === UserRole.ADMIN;
     const isTherapist = currentUser.role === UserRole.THERAPIST;
     const isPatient = currentUser.role === UserRole.PATIENT;

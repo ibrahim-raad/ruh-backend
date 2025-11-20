@@ -6,6 +6,7 @@ import { isDefined } from 'class-validator';
 import { TherapistSettings } from './entities/therapist-settings.entity';
 import { SearchTherapistSettings } from './dto/search-therapist-settings.dto';
 import { TherapistSettingsAudit } from './entities/therapist-settings.entity.audit';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class TherapistSettingsService extends CrudService<
@@ -31,7 +32,7 @@ export class TherapistSettingsService extends CrudService<
 
   public async find(
     criteria: SearchTherapistSettings,
-  ): Promise<TherapistSettings[]> {
+  ): Promise<FindOutputDto<TherapistSettings>> {
     const where = {
       ...(isDefined(criteria.timezone) && {
         timezone: ILike('%' + criteria.timezone + '%'),
@@ -40,7 +41,6 @@ export class TherapistSettingsService extends CrudService<
       ...(isDefined(criteria.is_open) && { is_open: criteria.is_open }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

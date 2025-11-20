@@ -10,6 +10,7 @@ import { PatientService } from '../patients/patient.service';
 import { ClsService } from 'nestjs-cls';
 import { SESSION_USER_KEY } from 'src/app.constants';
 import { User } from '../users/entities/user.entity';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class ReflectionService extends CrudService<
@@ -47,7 +48,7 @@ export class ReflectionService extends CrudService<
   public async find(
     criteria: SearchReflection,
     exposed: boolean = false,
-  ): Promise<Reflection[]> {
+  ): Promise<FindOutputDto<Reflection>> {
     const where = {
       ...(isDefined(criteria.title) && {
         title: ILike('%' + criteria.title + '%'),
@@ -67,7 +68,6 @@ export class ReflectionService extends CrudService<
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

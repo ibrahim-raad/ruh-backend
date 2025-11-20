@@ -68,10 +68,15 @@ export class AssignedExerciseController {
     @Param('therapyCaseId', ParseUUIDPipe) therapyCaseId: string,
     @CurrentUser() user: User,
   ): Promise<PageOutput<AssignedExerciseOutput>> {
-    const data = await this.service.find(criteria, therapyCaseId, user);
+    const { items, total } = await this.service.find(
+      criteria,
+      therapyCaseId,
+      user,
+    );
     return {
-      hasNext: data.length === criteria.limit,
-      items: data.map((item) => this.mapper.toOutput(item)),
+      hasNext: items.length === criteria.limit,
+      items: items.map((item) => this.mapper.toOutput(item)),
+      total,
     };
   }
 
@@ -83,7 +88,8 @@ export class AssignedExerciseController {
   public async historyAll(
     @Query() criteria: AuditSearchInput,
   ): Promise<PageOutput<AuditOutput<AssignedExerciseOutput>>> {
-    const auditRecords = await this.service.historyAll(criteria);
+    const { items: auditRecords, total } =
+      await this.service.historyAll(criteria);
 
     const items = auditRecords.map((record) => ({
       ...record,
@@ -95,6 +101,7 @@ export class AssignedExerciseController {
     return {
       hasNext: items.length === criteria.limit,
       items,
+      total,
     };
   }
 
@@ -145,7 +152,7 @@ export class AssignedExerciseController {
     @Param('id', ParseUUIDPipe) id: string,
     @Query() criteria: AuditSearchInput,
   ): Promise<PageOutput<AuditOutput<AssignedExerciseOutput>>> {
-    const auditRecords = await this.service.history({
+    const { items: auditRecords, total } = await this.service.history({
       exist: { id },
       ...criteria,
     });
@@ -160,6 +167,7 @@ export class AssignedExerciseController {
     return {
       hasNext: items.length === criteria.limit,
       items,
+      total,
     };
   }
 

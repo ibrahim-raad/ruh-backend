@@ -6,6 +6,7 @@ import { isDefined } from 'class-validator';
 import { TherapistAvailability } from './entities/therapist-availability.entity';
 import { SearchTherapistAvailability } from './dto/search-therapist-availability.dto';
 import { TherapistAvailabilityAudit } from './entities/therapist-availability.entity.audit';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class TherapistAvailabilityService extends CrudService<
@@ -27,7 +28,7 @@ export class TherapistAvailabilityService extends CrudService<
 
   public async find(
     criteria: SearchTherapistAvailability,
-  ): Promise<TherapistAvailability[]> {
+  ): Promise<FindOutputDto<TherapistAvailability>> {
     const where = {
       ...(isDefined(criteria.days_of_week) && {
         day_of_week: In(criteria.days_of_week),
@@ -35,7 +36,6 @@ export class TherapistAvailabilityService extends CrudService<
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

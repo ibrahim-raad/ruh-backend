@@ -19,6 +19,7 @@ import { CrudService } from '../shared/abstract-crud.service';
 import { Patient } from '../patients/entities/patient.entity';
 import { Therapist } from '../therapists/entities/therapist.entity';
 import * as path from 'path';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class UserService extends CrudService<User, UserAudit> {
@@ -94,7 +95,7 @@ export class UserService extends CrudService<User, UserAudit> {
     };
   }
 
-  public async find(criteria: SearchUser): Promise<User[]> {
+  public async find(criteria: SearchUser): Promise<FindOutputDto<User>> {
     const where = this.generateWhere(criteria);
     return this.all(where, criteria, criteria.deleted_at);
   }

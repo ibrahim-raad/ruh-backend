@@ -10,6 +10,7 @@ import { TherapistService } from '../therapists/therapist.service';
 import { SpecializationService } from '../specializations/specialization.service';
 import * as path from 'path';
 import { FindOptionsWhere } from 'typeorm';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class TherapistCertificateService extends CrudService<
@@ -70,7 +71,7 @@ export class TherapistCertificateService extends CrudService<
 
   public async find(
     criteria: SearchTherapistCertificate,
-  ): Promise<TherapistCertificate[]> {
+  ): Promise<FindOutputDto<TherapistCertificate>> {
     const where = {
       ...(isDefined(criteria.title) && {
         title: ILike('%' + criteria.title + '%'),
@@ -93,8 +94,7 @@ export class TherapistCertificateService extends CrudService<
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 
   public async replaceFile(

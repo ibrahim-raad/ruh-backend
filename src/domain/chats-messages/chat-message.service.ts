@@ -10,6 +10,7 @@ import { UserService } from '../users/user.service';
 import { TherapyCaseService } from '../therapy-cases/therapy-case.service';
 import { User } from '../users/entities/user.entity';
 import { UserRole } from '../users/shared/user-role.enum';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class ChatMessageService extends CrudService<
@@ -49,7 +50,7 @@ export class ChatMessageService extends CrudService<
     criteria: SearchChatMessage,
     therapyCaseId: string,
     user: User,
-  ): Promise<ChatMessage[]> {
+  ): Promise<FindOutputDto<ChatMessage>> {
     const accessCondition = this.getAccessCondition(user, therapyCaseId);
     const where = {
       ...(isDefined(criteria.message) && {
@@ -63,11 +64,10 @@ export class ChatMessageService extends CrudService<
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at, {
+    return this.all(where, criteria, criteria.deleted_at, {
       ...(criteria.with_therapy_case && { therapy_case: true }),
       ...(criteria.with_user && { user: true }),
     });
-    return items;
   }
 
   public getAccessCondition(

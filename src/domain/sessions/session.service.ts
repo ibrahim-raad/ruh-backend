@@ -8,6 +8,7 @@ import { SearchSession } from './dto/search-session.dto';
 import { SessionAudit } from './entities/session.entity.audit';
 import { TherapyCaseService } from '../therapy-cases/therapy-case.service';
 import { TherapistSettingsService } from '../therapists-settings/therapist-settings.service';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class SessionService extends CrudService<Session, SessionAudit> {
@@ -56,7 +57,7 @@ export class SessionService extends CrudService<Session, SessionAudit> {
     return super.create(entity);
   }
 
-  public async find(criteria: SearchSession): Promise<Session[]> {
+  public async find(criteria: SearchSession): Promise<FindOutputDto<Session>> {
     const where = {
       ...(isDefined(criteria.type) && {
         type: criteria.type,
@@ -70,7 +71,6 @@ export class SessionService extends CrudService<Session, SessionAudit> {
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

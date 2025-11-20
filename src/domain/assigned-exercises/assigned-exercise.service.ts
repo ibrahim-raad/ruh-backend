@@ -13,6 +13,7 @@ import { ExerciseService } from '../exercises/exercise.service';
 import { ClsService } from 'nestjs-cls';
 import { SESSION_USER_KEY } from 'src/app.constants';
 import { ExerciseVisibility } from '../exercises/shared/exercise-visibility.enum';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class AssignedExerciseService extends CrudService<
@@ -69,7 +70,7 @@ export class AssignedExerciseService extends CrudService<
     criteria: SearchAssignedExercise,
     therapyCaseId: string,
     currentUser: User,
-  ): Promise<AssignedExercise[]> {
+  ): Promise<FindOutputDto<AssignedExercise>> {
     const where = {
       ...(isDefined(criteria.completion_notes) && {
         completion_notes: ILike('%' + criteria.completion_notes + '%'),
@@ -84,8 +85,7 @@ export class AssignedExerciseService extends CrudService<
       ...this.getAccessCondition(therapyCaseId, currentUser),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 
   public getAccessCondition(

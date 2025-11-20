@@ -11,6 +11,7 @@ import { SpecializationService } from '../specializations/specialization.service
 import { ClsService } from 'nestjs-cls';
 import { SESSION_USER_KEY } from 'src/app.constants';
 import { User } from '../users/entities/user.entity';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class TherapistSpecializationService extends CrudService<
@@ -71,7 +72,7 @@ export class TherapistSpecializationService extends CrudService<
 
   public async find(
     criteria: SearchTherapistSpecialization,
-  ): Promise<TherapistSpecialization[]> {
+  ): Promise<FindOutputDto<TherapistSpecialization>> {
     const where = {
       ...(isDefined(criteria.therapist_ids) && {
         therapist: { id: In(criteria.therapist_ids) },
@@ -87,7 +88,6 @@ export class TherapistSpecializationService extends CrudService<
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

@@ -9,6 +9,7 @@ import { SessionReportAudit } from './entities/session-report.entity.audit';
 import { SessionService } from '../sessions/session.service';
 import { User } from '../users/entities/user.entity';
 import { UserRole } from '../users/shared/user-role.enum';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class SessionReportService extends CrudService<
@@ -36,7 +37,7 @@ export class SessionReportService extends CrudService<
   public async find(
     criteria: SearchSessionReport,
     user: User,
-  ): Promise<SessionReport[]> {
+  ): Promise<FindOutputDto<SessionReport>> {
     let accessCondition = {};
 
     switch (user.role) {
@@ -101,7 +102,6 @@ export class SessionReportService extends CrudService<
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 }

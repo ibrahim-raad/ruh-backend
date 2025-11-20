@@ -15,6 +15,7 @@ import { TherapyCaseService } from '../therapy-cases/therapy-case.service';
 import { TherapistTransferRequestStatus } from './shared/therapist-transfer-request-status.enum';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { TherapistTransferRequestTopic } from './shared/therapist-transfer-request-topic.enum';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class TherapistTransferRequestService extends CrudService<
@@ -101,7 +102,7 @@ export class TherapistTransferRequestService extends CrudService<
 
   public async find(
     criteria: SearchTherapistTransferRequest,
-  ): Promise<TherapistTransferRequest[]> {
+  ): Promise<FindOutputDto<TherapistTransferRequest>> {
     const where = {
       ...(isDefined(criteria.transfer_reason) && {
         transfer_reason: ILike('%' + criteria.transfer_reason + '%'),
@@ -126,8 +127,7 @@ export class TherapistTransferRequestService extends CrudService<
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    const items = await this.all(where, criteria, criteria.deleted_at);
-    return items;
+    return this.all(where, criteria, criteria.deleted_at);
   }
 
   private getCurrentUser(): User | undefined {
