@@ -8,4 +8,6 @@ export class PageOutput<T> {
   readonly hasNext: boolean;
   @ApiProperty({ description: 'List of items', type: [Object] })
   readonly items: T[];
+  @ApiProperty({ description: 'Total number of items', type: Number })
+  readonly total: number;
 }

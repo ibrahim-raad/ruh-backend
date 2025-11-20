@@ -61,10 +61,11 @@ export class CurrencyController {
   public async list(
     @Query() criteria: SearchCurrency,
   ): Promise<PageOutput<CurrencyOutput>> {
-    const data = await this.service.find(criteria);
+    const { items, total } = await this.service.find(criteria);
     return {
-      hasNext: data.length === criteria.limit,
-      items: data.map((item) => this.mapper.toOutput(item)),
+      hasNext: items.length === criteria.limit,
+      items: items.map((item) => this.mapper.toOutput(item)),
+      total,
     };
   }
 
@@ -76,7 +77,8 @@ export class CurrencyController {
   public async historyAll(
     @Query() criteria: AuditSearchInput,
   ): Promise<PageOutput<AuditOutput<CurrencyOutput>>> {
-    const auditRecords = await this.service.historyAll(criteria);
+    const { items: auditRecords, total } =
+      await this.service.historyAll(criteria);
 
     const items = auditRecords.map((record) => ({
       ...record,
@@ -88,6 +90,7 @@ export class CurrencyController {
     return {
       hasNext: items.length === criteria.limit,
       items,
+      total,
     };
   }
 
@@ -128,7 +131,7 @@ export class CurrencyController {
     @Param('id', ParseUUIDPipe) id: string,
     @Query() criteria: AuditSearchInput,
   ): Promise<PageOutput<AuditOutput<CurrencyOutput>>> {
-    const auditRecords = await this.service.history({
+    const { items: auditRecords, total } = await this.service.history({
       exist: { id },
       ...criteria,
     });
@@ -143,6 +146,7 @@ export class CurrencyController {
     return {
       hasNext: items.length === criteria.limit,
       items,
+      total,
     };
   }
 

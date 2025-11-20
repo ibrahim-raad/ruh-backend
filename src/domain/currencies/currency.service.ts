@@ -6,6 +6,7 @@ import { isDefined } from 'class-validator';
 import { Currency } from './entities/currency.entity';
 import { SearchCurrency } from './dto/search-currency.dto';
 import { CurrencyAudit } from './entities/currency.entity.audit';
+import { FindOutputDto } from '../shared/dto/find-output,dto';
 
 @Injectable()
 export class CurrencyService extends CrudService<Currency, CurrencyAudit> {
@@ -18,7 +19,9 @@ export class CurrencyService extends CrudService<Currency, CurrencyAudit> {
     super(Currency, repository, auditRepository, {});
   }
 
-  public async find(criteria: SearchCurrency): Promise<Currency[]> {
+  public async find(
+    criteria: SearchCurrency,
+  ): Promise<FindOutputDto<Currency>> {
     const where = {
       ...(isDefined(criteria.name) && {
         name: ILike('%' + criteria.name + '%'),

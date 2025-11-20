@@ -11,6 +11,7 @@ import { AbstractEntity } from './abstract.entity';
 import { FindOptionsRelations } from 'typeorm/find-options/FindOptionsRelations';
 import { AbstractService } from './abstract.service';
 import { InRange } from './find-operator.extensions';
+import { FindOutputDto } from './dto/find-output,dto';
 
 export abstract class AuditService<
   Model extends AbstractEntity,
@@ -27,7 +28,7 @@ export abstract class AuditService<
 
   public async history(
     criteria: AuditCriteria & { exist: FindOptionsWhere<Model> },
-  ): Promise<AuditModel[]> {
+  ): Promise<FindOutputDto<AuditModel>> {
     const where = {
       ...(isDefined(criteria.version) && { version: criteria.version }),
       ...(isDefined(criteria.events) &&
@@ -43,10 +44,10 @@ export abstract class AuditService<
     });
 
     if (!isDefined(entity)) {
-      return [];
+      return { items: [], total: 0 };
     }
 
-    return this.auditRepository.find({
+    const [items, total] = await this.auditRepository.findAndCount({
       skip: criteria.offset,
       take: criteria.limit,
       order: convertToNestedObject(criteria.sort, {
@@ -57,9 +58,12 @@ export abstract class AuditService<
         ...where,
       },
     });
+    return { items, total };
   }
 
-  public async historyAll(criteria: AuditCriteria): Promise<AuditModel[]> {
+  public async historyAll(
+    criteria: AuditCriteria,
+  ): Promise<FindOutputDto<AuditModel>> {
     const where = {
       ...(isDefined(criteria.version) && { version: criteria.version }),
       ...(isDefined(criteria.events) &&
@@ -69,7 +73,7 @@ export abstract class AuditService<
       createdAt: InRange(criteria.date),
     } as FindOptionsWhere<AuditModel>;
 
-    return await this.auditRepository.find({
+    const [items, total] = await this.auditRepository.findAndCount({
       skip: criteria.offset,
       take: criteria.limit,
       order: convertToNestedObject(criteria.sort, {
@@ -77,5 +81,6 @@ export abstract class AuditService<
       }) as FindOptionsOrder<AuditModel>,
       where,
     });
+    return { items, total };
   }
 }

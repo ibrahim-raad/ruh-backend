@@ -17,6 +17,7 @@ import { AuditService } from './audit.service';
 import { PickKeysByType } from 'typeorm/common/PickKeysByType';
 import { ValidationError } from '@nestjs/common';
 import { ServiceValidationError } from 'src/errors/service-validation.error';
+import { FindOutputDto } from './dto/find-output,dto';
 
 export abstract class CrudService<
   Model extends AbstractEntity,
@@ -151,8 +152,8 @@ export abstract class CrudService<
     page: Pageable,
     withDeleted = false,
     relations: FindOptionsRelations<Model> = {},
-  ): Promise<Model[]> {
-    const entities = await this.repository.find({
+  ): Promise<FindOutputDto<Model>> {
+    const [entities, total] = await this.repository.findAndCount({
       skip: page.offset,
       take: page.limit,
       order: convertToNestedObject(page.sort, {
@@ -162,7 +163,7 @@ export abstract class CrudService<
       relations: { ...this.relations, ...relations },
       withDeleted,
     });
-    return entities;
+    return { items: entities, total };
   }
 
   protected async validateInput(input: Model): Promise<void> {
