@@ -73,7 +73,7 @@ export abstract class AbstractSubscriber<
       id: entity.id,
       version: entity.version,
       event,
-      userId: user ? `${user.id}` : undefined,
+      userId: user?.id,
       data: entity,
     } as DeepPartial<AuditModel>);
 
