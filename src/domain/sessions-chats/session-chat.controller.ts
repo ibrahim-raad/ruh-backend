@@ -87,6 +87,7 @@ export class SessionChatController {
   @ApiNestedQuery({ name: 'date', type: DateRangeInput })
   public async historyAll(
     @Query() criteria: AuditSearchInput,
+    @Param('session_id', ParseUUIDPipe) session_id: string,
   ): Promise<PageOutput<AuditOutput<SessionChatOutput>>> {
     const { items: auditRecords, total } =
       await this.service.historyAll(criteria);
@@ -125,6 +126,7 @@ export class SessionChatController {
   @ApiNestedQuery({ name: 'date', type: DateRangeInput })
   public async history(
     @Param('id', ParseUUIDPipe) id: string,
+    @Param('session_id', ParseUUIDPipe) session_id: string,
     @Query() criteria: AuditSearchInput,
   ): Promise<PageOutput<AuditOutput<SessionChatOutput>>> {
     const { items: auditRecords, total } = await this.service.history({
@@ -165,8 +167,11 @@ export class SessionChatController {
   @ApiException(() => [NotFoundException])
   async permanentDelete(
     @Param('id', ParseUUIDPipe) id: string,
+    @Param('session_id', ParseUUIDPipe) session_id: string,
+    @CurrentUser() user: User,
   ): Promise<{ message: string }> {
-    await this.service.permanentDelete({ id });
+    const accessCondition = this.service.getAccessCondition(user, session_id);
+    await this.service.permanentDelete({ id, ...accessCondition });
     return { message: 'SessionChat permanently deleted' };
   }
 
@@ -174,8 +179,11 @@ export class SessionChatController {
   @ApiBearerAuth()
   async restore(
     @Param('id', ParseUUIDPipe) id: string,
+    @Param('session_id', ParseUUIDPipe) session_id: string,
+    @CurrentUser() user: User,
   ): Promise<SessionChatOutput> {
-    const restored = await this.service.restore({ id });
+    const accessCondition = this.service.getAccessCondition(user, session_id);
+    const restored = await this.service.restore({ id, ...accessCondition });
     return this.mapper.toOutput(restored);
   }
 }

@@ -86,6 +86,7 @@ export class ChatMessageController {
   @ApiNestedQuery({ name: 'date', type: DateRangeInput })
   public async historyAll(
     @Query() criteria: AuditSearchInput,
+    @Param('therapyCaseId', ParseUUIDPipe) therapyCaseId: string,
   ): Promise<PageOutput<AuditOutput<ChatMessageOutput>>> {
     const { items: auditRecords, total } =
       await this.service.historyAll(criteria);
@@ -150,6 +151,7 @@ export class ChatMessageController {
   @ApiNestedQuery({ name: 'date', type: DateRangeInput })
   public async history(
     @Param('id', ParseUUIDPipe) id: string,
+    @Param('therapyCaseId', ParseUUIDPipe) therapyCaseId: string,
     @Query() criteria: AuditSearchInput,
   ): Promise<PageOutput<AuditOutput<ChatMessageOutput>>> {
     const { items: auditRecords, total } = await this.service.history({
