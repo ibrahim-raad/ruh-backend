@@ -84,7 +84,7 @@ export class AuthController {
   async refreshToken(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<{ accessToken: string }> {
+  ): Promise<{ access_token: string }> {
     const token = req.cookies['refreshToken'] as string;
     if (!token) {
       throw new UnauthorizedException('Refresh token not found');
@@ -97,7 +97,7 @@ export class AuthController {
       path: '/',
       maxAge: REFRESH_TOKEN_MAX_AGE,
     });
-    return { accessToken: tokens.access_token };
+    return { access_token: tokens.access_token };
   }
 
   @Post('logout')
