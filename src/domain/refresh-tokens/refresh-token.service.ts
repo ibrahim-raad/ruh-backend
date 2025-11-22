@@ -4,6 +4,7 @@ import { RefreshToken } from './entities/refresh-token.entity';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import * as crypto from 'crypto';
+import { REFRESH_TOKEN_MAX_AGE } from 'src/app.constants';
 
 @Injectable()
 export class RefreshTokenService {
@@ -14,7 +15,7 @@ export class RefreshTokenService {
 
   public async create(user: User): Promise<RefreshToken> {
     const token = crypto.randomBytes(40).toString('hex');
-    const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7); // 7 days
+    const expiresAt = new Date(Date.now() + REFRESH_TOKEN_MAX_AGE);
     const refreshToken = this.repository.create({
       user,
       token,

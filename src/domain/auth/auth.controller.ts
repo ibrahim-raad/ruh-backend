@@ -8,7 +8,10 @@ import {
   ClassSerializerInterceptor,
   UnauthorizedException,
   Get,
+  Res,
+  Req,
 } from '@nestjs/common';
+import type { Response, Request } from 'express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ApiException } from 'src/domain/shared/decorators';
 import { AuthService } from './auth.service';
@@ -22,6 +25,7 @@ import { UserOutput } from '../users/dto/user.output';
 import { Public } from 'src/guards/decorators/public-route.decorator';
 import { CurrentUser } from '../shared/decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';
+import { REFRESH_TOKEN_MAX_AGE } from 'src/app.constants';
 
 @ApiTags('Auth')
 @Controller('/api/v1/auth')
@@ -49,11 +53,27 @@ export class AuthController {
   @Public()
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiException(() => [BadRequestException, UnauthorizedException])
-  async login(@Body() input: LoginUser): Promise<AuthOutput> {
-    const tokens = await this.service.login(input.email, input.password);
+  async login(
+    @Body() input: LoginUser,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<AuthOutput> {
+    const { user, tokens } = await this.service.login(
+      input.email,
+      input.password,
+    );
+    const { access_token, refresh_token } = tokens;
+    res.cookie('refreshToken', refresh_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: '/',
+      maxAge: REFRESH_TOKEN_MAX_AGE,
+    });
     return {
-      user: this.mapper.toOutput(tokens.user),
-      tokens: tokens.tokens,
+      user: this.mapper.toOutput(user),
+      tokens: {
+        access_token,
+      },
     };
   }
 
@@ -62,18 +82,41 @@ export class AuthController {
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiException(() => [BadRequestException, UnauthorizedException])
   async refreshToken(
-    @Body() input: RefreshTokenInput,
-  ): Promise<{ access_token: string; refresh_token: string }> {
-    const tokens = await this.service.refreshToken(input.token);
-    return tokens;
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<{ accessToken: string }> {
+    const token = req.cookies['refreshToken'] as string;
+    if (!token) {
+      throw new UnauthorizedException('Refresh token not found');
+    }
+    const tokens = await this.service.refreshToken(token);
+    res.cookie('refreshToken', tokens.refresh_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: '/',
+      maxAge: REFRESH_TOKEN_MAX_AGE,
+    });
+    return { accessToken: tokens.access_token };
   }
 
   @Post('logout')
   @ApiBearerAuth()
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiException(() => [BadRequestException, UnauthorizedException])
-  async logout(@Body() input: LogoutInput): Promise<void> {
-    await this.service.logout(input.token);
+  async logout(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<void> {
+    const token = req.cookies['refreshToken'] as string;
+    if (token) {
+      await this.service.logout(token);
+    }
+    res.cookie('refreshToken', '', {
+      httpOnly: true,
+      path: '/',
+      maxAge: 0,
+    });
   }
 
   @Get('me')

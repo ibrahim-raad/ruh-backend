@@ -8,6 +8,7 @@ import { validateFor } from './lib/class-validator-extensions/validate-or-throw'
 import { useGlobalDefaults } from './app.globals';
 import * as path from 'path';
 import * as dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap(config: AppConfig) {
@@ -31,6 +32,8 @@ async function bootstrap(config: AppConfig) {
 
   // Setting globals
   useGlobalDefaults(app);
+
+  app.use(cookieParser());
 
   // Setting up swagger
   const document = SwaggerModule.createDocument(
