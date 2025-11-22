@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, In, IsNull, Not, Repository } from 'typeorm';
 import { CrudService } from 'src/domain/shared/abstract-crud.service';
@@ -55,7 +55,7 @@ export class AssignedExerciseService extends CrudService<
       exercise.visibility === ExerciseVisibility.PRIVATE &&
       exercise.created_by_id !== user?.id
     ) {
-      throw new UnauthorizedException(
+      throw new ForbiddenException(
         'You are not authorized to assign this exercise',
       );
     }
