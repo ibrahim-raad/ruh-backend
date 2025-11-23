@@ -1,0 +1,36 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - env.docker
+    volumes:
+      - ./uploads:/usr/src/app/uploads
+    depends_on:
+      - db
+    networks:
+      - ruh-network
+    restart: unless-stopped
+
+  db:
+    image: postgres:15-alpine
+    env_file:
+      - env.docker
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    networks:
+      - ruh-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  ruh-network:
+    driver: bridge
