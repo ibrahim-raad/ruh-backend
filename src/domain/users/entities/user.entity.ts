@@ -103,7 +103,7 @@ export class User extends AbstractEntity {
 
   @IsOptional()
   @IsString()
-  @Column({ nullable: true, length: 40 })
+  @Column({ nullable: true, length: 100 })
   token?: string;
 
   @IsOptional()
