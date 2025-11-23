@@ -15,7 +15,16 @@ async function bootstrap(config: AppConfig) {
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule.forRoot(config),
     {
-      cors: true,
+      cors: {
+        origin: [
+          'https://ruhtherapy.online',
+          'https://www.ruhtherapy.online',
+          'http://localhost:8080',
+          'http://localhost:5173',
+        ],
+        credentials: true,
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+      },
       rawBody: true,
       bufferLogs: true,
     },
