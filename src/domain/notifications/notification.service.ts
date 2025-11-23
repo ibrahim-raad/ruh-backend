@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, In, IsNull, Not, Repository } from 'typeorm';
 import { CrudService } from 'src/domain/shared/abstract-crud.service';
@@ -8,18 +8,23 @@ import { SearchNotification } from './dto/search-notification.dto';
 import { NotificationAudit } from './entities/notification.entity.audit';
 import { UserService } from '../users/user.service';
 import { FindOutputDto } from '../shared/dto/find-output,dto';
+import { ResendEmailProvider } from './providers/resend-email.provider';
+import { NotificationChannel } from './shared/notification-channel.enum';
 
 @Injectable()
 export class NotificationService extends CrudService<
   Notification,
   NotificationAudit
 > {
+  private readonly logger = new Logger(NotificationService.name);
+
   constructor(
     @InjectRepository(Notification)
     protected readonly repository: Repository<Notification>,
     @InjectRepository(NotificationAudit)
     protected readonly auditRepository: Repository<NotificationAudit>,
     private readonly userService: UserService,
+    private readonly resendEmailProvider: ResendEmailProvider,
   ) {
     super(Notification, repository, auditRepository, {
       user: true,
@@ -30,7 +35,27 @@ export class NotificationService extends CrudService<
     const user =
       (await this.userService.one({ id: input.user?.id }, {}, false)) ??
       undefined;
-    return super.create({ ...input, user });
+    const notification = await super.create({ ...input, user });
+
+    if (user) {
+      this.sendNotification(notification).catch((err) => {
+        this.logger.error('Error sending notification', err);
+      });
+    }
+
+    return notification;
+  }
+
+  public async sendInstant(input: Notification): Promise<void> {
+    const user = input.user?.id
+      ? await this.userService.one({ id: input.user?.id })
+      : undefined;
+    if (user) {
+      this.sendNotification({ ...input, user }).catch((err) => {
+        this.logger.error('Error sending notification', err);
+        throw new BadRequestException('Error sending notification');
+      });
+    }
   }
 
   public async find(
@@ -51,5 +76,17 @@ export class NotificationService extends CrudService<
     };
 
     return this.all(where, criteria, criteria.deleted_at);
+  }
+
+  private async sendNotification(notification: Notification) {
+    this.logger.log(`Sending notification: ${JSON.stringify(notification)}`);
+    switch (notification.channel) {
+      case NotificationChannel.EMAIL:
+        await this.resendEmailProvider.send(notification);
+        break;
+      case NotificationChannel.PUSH:
+        // await this.pushNotificationProvider.send(notification);
+        break;
+    }
   }
 }

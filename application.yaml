@@ -46,3 +46,10 @@ swagger:
   description: APIs available for the Ruh Therapy
   tags:
     - ruh-therapy
+
+resend:
+  apiKey: ${RESEND_API_KEY}
+  fromEmail: ${RESEND_FROM_EMAIL}
+
+webApp:
+  url: ${WEB_APP_URL}

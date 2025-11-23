@@ -10,6 +10,8 @@ import { DatabaseConfig } from './config/database.config';
 import { LoggerConfig } from './config/logger.config';
 import { SwaggerConfig } from './config/swagger.config';
 import { JwtConfig } from './config/jwt.config';
+import { ResendConfig } from './config/resend.config';
+import { WebAppConfig } from './config/web-app.config';
 
 export class AppConfig {
   @IsNotEmpty()
@@ -39,4 +41,12 @@ export class AppConfig {
   @ValidateNested()
   @Type(() => JwtConfig)
   readonly jwt: JwtConfig;
+
+  @ValidateNested()
+  @Type(() => ResendConfig)
+  readonly resend: ResendConfig;
+
+  @ValidateNested()
+  @Type(() => WebAppConfig)
+  readonly webApp: WebAppConfig;
 }

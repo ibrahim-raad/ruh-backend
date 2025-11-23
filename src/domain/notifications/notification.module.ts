@@ -9,6 +9,7 @@ import { NotificationAudit } from './entities/notification.entity.audit';
 import { NotificationSubscriber } from './entities/notification.entity.subscriber';
 import { NotificationMapper } from './notification.mapper';
 import { UserModule } from '../users/user.module';
+import { ResendEmailProvider } from './providers/resend-email.provider';
 
 @Module({
   imports: [
@@ -17,7 +18,12 @@ import { UserModule } from '../users/user.module';
     EventEmitterModule,
     UserModule,
   ],
-  providers: [NotificationService, NotificationSubscriber, NotificationMapper],
+  providers: [
+    NotificationService,
+    NotificationSubscriber,
+    NotificationMapper,
+    ResendEmailProvider,
+  ],
   controllers: [NotificationController],
   exports: [NotificationService, NotificationMapper, TypeOrmModule],
 })

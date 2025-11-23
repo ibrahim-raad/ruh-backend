@@ -24,7 +24,7 @@ export class CreateNotification {
 
   @IsOptional()
   @IsJSON()
-  readonly data?: Record<string, any>;
+  readonly data?: string;
 
   @IsOptional()
   @IsString()
@@ -33,4 +33,8 @@ export class CreateNotification {
   @IsOptional()
   @IsString()
   readonly body: string;
+
+  @IsOptional()
+  @IsString()
+  readonly user_id?: string;
 }

@@ -12,9 +12,12 @@ export class NotificationMapper {
       type: input.type,
       channel: input.channel,
       topic: input.topic,
-      data: input.data,
+      data: input.data
+        ? (JSON.parse(input.data) as Record<string, any>)
+        : undefined,
       title: input.title,
       body: input.body,
+      user: input.user_id ? { id: input.user_id } : undefined,
     };
     return Object.assign(new Notification(), data);
   }

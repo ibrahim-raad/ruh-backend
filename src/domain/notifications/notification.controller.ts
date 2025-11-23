@@ -55,6 +55,16 @@ export class NotificationController {
     return this.mapper.toOutput(created);
   }
 
+  @Post('instant')
+  @Roles(UserRole.ADMIN)
+  @ApiBearerAuth()
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiException(() => [BadRequestException, ConflictException])
+  async sendInstant(@Body() input: CreateNotification): Promise<void> {
+    const entity = this.mapper.toModel(input);
+    await this.service.sendInstant(entity);
+  }
+
   @Get()
   @Roles([UserRole.ADMIN])
   @ApiBearerAuth()
