@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class RefreshTokenInput {
+export class VerifyEmailDto {
   @IsNotEmpty()
   @IsString()
   readonly token: string;

@@ -10,6 +10,7 @@ import {
   Get,
   Res,
   Req,
+  ForbiddenException,
 } from '@nestjs/common';
 import type { Response, Request } from 'express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -19,13 +20,14 @@ import { AuthOutput } from './dto/auth.output';
 import { UserMapper } from '../users/user.mapper';
 import { SignupUser } from './dto/signup-user.dto';
 import { LoginUser } from './dto/login-user.dto';
-import { RefreshTokenInput } from './dto/refresh-token.dto';
-import { LogoutInput } from './dto/logout.dto';
 import { UserOutput } from '../users/dto/user.output';
 import { Public } from 'src/guards/decorators/public-route.decorator';
 import { CurrentUser } from '../shared/decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';
 import { REFRESH_TOKEN_MAX_AGE } from 'src/app.constants';
+import { VerifyEmailDto } from './dto/verify-email.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @ApiTags('Auth')
 @Controller('/api/v1/auth')
@@ -52,7 +54,11 @@ export class AuthController {
   @Post('login')
   @Public()
   @UseInterceptors(ClassSerializerInterceptor)
-  @ApiException(() => [BadRequestException, UnauthorizedException])
+  @ApiException(() => [
+    BadRequestException,
+    UnauthorizedException,
+    ForbiddenException,
+  ])
   async login(
     @Body() input: LoginUser,
     @Res({ passthrough: true }) res: Response,
@@ -130,5 +136,29 @@ export class AuthController {
     }
     const found = await this.service.me(userId);
     return this.mapper.toOutput(found);
+  }
+
+  @Post('verify-email')
+  @Public()
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiException(() => [BadRequestException])
+  async verifyEmail(@Body() input: VerifyEmailDto): Promise<void> {
+    await this.service.verifyEmail(input.token);
+  }
+
+  @Post('forgot-password')
+  @Public()
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiException(() => [BadRequestException])
+  async forgotPassword(@Body() input: ForgotPasswordDto): Promise<void> {
+    await this.service.forgotPassword(input.email);
+  }
+
+  @Post('reset-password')
+  @Public()
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiException(() => [BadRequestException])
+  async resetPassword(@Body() input: ResetPasswordDto): Promise<void> {
+    await this.service.resetPassword(input.token, input.password);
   }
 }

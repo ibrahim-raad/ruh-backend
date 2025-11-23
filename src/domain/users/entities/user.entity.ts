@@ -103,12 +103,12 @@ export class User extends AbstractEntity {
 
   @IsOptional()
   @IsString()
-  @Column({ nullable: true, length: 6 })
-  otp?: string;
+  @Column({ nullable: true, length: 40 })
+  token?: string;
 
   @IsOptional()
   @Type(() => Date)
   @IsDate()
   @Column({ nullable: true, type: 'timestamp' })
-  otp_expires_at?: Date;
+  token_expires_at?: Date;
 }
