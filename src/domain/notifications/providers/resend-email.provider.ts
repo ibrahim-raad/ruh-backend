@@ -4,6 +4,7 @@ import { Resend } from 'resend';
 import { AppConfig } from '../../../app.config';
 import { Notification } from '../entities/notification.entity';
 import { NotificationType } from '../shared/notification-type.enum';
+import { AppPaths } from '../../../app.constants';
 
 @Injectable()
 export class ResendEmailProvider {
@@ -75,7 +76,7 @@ export class ResendEmailProvider {
   }
 
   private generateVerificationEmail(token: string): string {
-    const url = `${this.webAppUrl}/verify-email?token=${token}`;
+    const url = `${this.webAppUrl}${AppPaths.VERIFY_EMAIL}?token=${token}`;
     return `
       <div style="font-family: Arial, sans-serif; padding: 20px;">
         <h2>Verify your email</h2>
@@ -87,7 +88,7 @@ export class ResendEmailProvider {
   }
 
   private generateResetPasswordEmail(token: string): string {
-    const url = `${this.webAppUrl}/reset-password?token=${token}`;
+    const url = `${this.webAppUrl}${AppPaths.RESET_PASSWORD}?token=${token}`;
     return `
       <div style="font-family: Arial, sans-serif; padding: 20px;">
         <h2>Reset your password</h2>

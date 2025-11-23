@@ -2,6 +2,12 @@ export const DEFAULT_PAGE_SIZE = 100;
 export const DEFAULT_SALT_ROUNDS = 10;
 export const SESSION_USER_KEY = 'user-context';
 export const REFRESH_TOKEN_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+export enum AppPaths {
+  VERIFY_EMAIL = '/auth/verify-email',
+  RESET_PASSWORD = '/auth/reset-password',
+}
+
 export const DATABASE_ERROR_MESSAGES = {
   UNIQUE_VIOLATION: (column: string) => `This ${column} already exists`,
   CONFLICT_VIOLATION: `This resource conflicts with another resource`,
