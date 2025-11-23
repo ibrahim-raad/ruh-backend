@@ -26,6 +26,7 @@ import { Type } from 'class-transformer';
 @Index(['full_name'])
 @Index(['role'])
 @Index(['gender'])
+@Index(['token'])
 export class User extends AbstractEntity {
   @IsNotEmpty()
   @IsString()
