@@ -50,9 +50,9 @@ export class AdminService extends CrudService<Admin, AdminAudit> {
 
   public async find(criteria: SearchAdmin): Promise<FindOutputDto<Admin>> {
     const userWhere = this.userService.generateWhere(criteria);
-    const isEmpty = Object.keys(userWhere).length > 0;
+    const isNotEmpty = Object.keys(userWhere).length > 0;
     const where = {
-      ...(!isEmpty && {
+      ...(isNotEmpty && {
         user: {
           ...userWhere,
         },
@@ -62,6 +62,9 @@ export class AdminService extends CrudService<Admin, AdminAudit> {
       }),
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
+
+    console.log('where', where);
+    console.log('criteria', criteria);
 
     return this.all(where, criteria, criteria.deleted_at);
   }

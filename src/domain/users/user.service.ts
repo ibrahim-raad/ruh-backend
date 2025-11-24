@@ -75,10 +75,9 @@ export class UserService extends CrudService<User, UserAudit> {
 
   public generateWhere(criteria: SearchUser): FindOptionsWhere<User> {
     return {
-      // TODO: Add name search
-      // ...(isDefined(criteria.name) && {
-      //   name: ILike('%' + criteria.name + '%'),
-      // }),
+      ...(isDefined(criteria.name) && {
+        full_name: ILike('%' + criteria.name + '%'),
+      }),
       ...(isDefined(criteria.email) && {
         email: ILike('%' + criteria.email + '%'),
       }),
