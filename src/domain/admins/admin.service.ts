@@ -63,9 +63,6 @@ export class AdminService extends CrudService<Admin, AdminAudit> {
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
-    console.log('where', where);
-    console.log('criteria', criteria);
-
     return this.all(where, criteria, criteria.deleted_at);
   }
 }
