@@ -38,7 +38,7 @@ export class SessionAiSummaryService extends CrudService<
   }
 
   public async create(input: SessionAiSummary): Promise<SessionAiSummary> {
-    const session = await this.sessionService.one({ id: input.sessionId });
+    const session = await this.sessionService.one({ id: input.session?.id });
     return super.create({
       ...input,
       session,

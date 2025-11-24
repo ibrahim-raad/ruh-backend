@@ -37,7 +37,7 @@ export class UserService extends CrudService<User, UserAudit> {
   }
 
   public async create(input: User): Promise<User> {
-    const country = await this.countryService.one({ id: input.countryId });
+    const country = await this.countryService.one({ id: input.country?.id });
     return super.create({ ...input, country });
   }
 
