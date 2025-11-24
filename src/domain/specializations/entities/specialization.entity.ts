@@ -12,6 +12,6 @@ export class Specialization extends AbstractEntity {
 
   @IsOptional()
   @IsString()
-  @Column({ nullable: true, length: 255 })
+  @Column({ nullable: true, type: 'text' })
   description?: string;
 }
