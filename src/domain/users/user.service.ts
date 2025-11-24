@@ -44,7 +44,7 @@ export class UserService extends CrudService<User, UserAudit> {
   public async update(old: User, input: User): Promise<User> {
     let newInput = input;
     if (input.country?.id !== old.countryId) {
-      const country = await this.countryService.one({ id: input.countryId });
+      const country = await this.countryService.one({ id: input.country?.id });
       newInput = Object.assign(new User(), newInput, { country });
     }
     return super.update(old, newInput);
