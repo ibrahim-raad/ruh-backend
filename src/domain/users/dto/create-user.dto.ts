@@ -47,7 +47,7 @@ export class CreateUser {
 
   @IsNotEmpty()
   @IsUUID()
-  readonly country_id?: string;
+  readonly country_id: string;
 
   @IsNotEmpty()
   @Type(() => Date)
