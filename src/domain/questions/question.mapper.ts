@@ -52,7 +52,9 @@ export class QuestionMapper {
     return Object.assign(new QuestionOutput(), {
       id: input.id,
       question: input.question,
-      order: parseFloat(input.order.toString()),
+      order: input.order
+        ? parseFloat((input.order ?? 0).toString())
+        : undefined,
       type: input.type,
       questionnaire: input.questionnaire
         ? this.questionnaireMapper.toOutput(input.questionnaire)

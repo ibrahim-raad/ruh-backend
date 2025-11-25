@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { QuestionType } from '../shared/question-type.enum';
 import { Questionnaire } from 'src/domain/questionnaires/entities/questionnaire.entity';
+import { ToNumber } from 'src/domain/shared/decorators/to-number.decorator';
 
 @Entity('questions')
 @Index(['question', 'questionnaire'], { unique: true })
@@ -23,6 +24,7 @@ export class Question extends AbstractEntity {
   question: string;
 
   @IsNotEmpty()
+  @ToNumber()
   @IsNumber()
   @Column({ nullable: false, type: 'decimal' })
   order: number;
