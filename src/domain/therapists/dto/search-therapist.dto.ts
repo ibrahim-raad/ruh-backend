@@ -16,7 +16,7 @@ export class SearchTherapist implements Pageable {
 
   @IsOptional()
   @IsString()
-  readonly sort: string = 'name ASC';
+  readonly sort: string = 'user.status ASC';
 
   @IsOptional()
   @IsBooleanish()
