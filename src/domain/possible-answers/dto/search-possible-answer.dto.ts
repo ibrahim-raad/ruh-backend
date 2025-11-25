@@ -23,7 +23,7 @@ export class SearchPossibleAnswer implements Pageable {
 
   @IsOptional()
   @IsString()
-  readonly sort: string = 'answer ASC, order ASC';
+  readonly sort: string = 'answer ASC';
 
   @IsOptional()
   @IsBooleanish()

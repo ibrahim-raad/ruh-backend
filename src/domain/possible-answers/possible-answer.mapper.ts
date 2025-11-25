@@ -32,7 +32,6 @@ export class PossibleAnswerMapper {
       }
       data = {
         answer: input.answer ?? existing?.answer,
-        order: input.order ?? existing?.order,
         question: input.question_id
           ? { id: input.question_id }
           : existing?.question,
@@ -51,7 +50,6 @@ export class PossibleAnswerMapper {
     return Object.assign(new PossibleAnswerOutput(), {
       id: input.id,
       answer: input.answer,
-      order: parseFloat(input.order.toString()),
       question: input.question
         ? this.questionMapper.toOutput(input.question)
         : undefined,

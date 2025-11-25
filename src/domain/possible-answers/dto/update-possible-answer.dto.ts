@@ -12,10 +12,6 @@ export class UpdatePossibleAnswer {
   readonly answer?: string;
 
   @IsOptional()
-  @IsNumber()
-  readonly order?: number;
-
-  @IsOptional()
   @IsUUID()
   readonly question_id?: string;
 
