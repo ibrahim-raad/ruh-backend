@@ -89,7 +89,7 @@ export class PatientController {
     return this.mapper.toOutput(found);
   }
 
-  @Patch(':id')
+  @Patch('me')
   @ApiBearerAuth()
   @ApiException(() => [
     NotFoundException,
@@ -97,10 +97,10 @@ export class PatientController {
     ConflictException,
   ])
   async update(
-    @Param('id', ParseUUIDPipe) id: string,
     @Body() input: UpdatePatient,
+    @CurrentUser() user: User,
   ): Promise<PatientOutput> {
-    const existing = await this.service.one({ id });
+    const existing = await this.service.one({ user: { id: user.id } });
     const entity = this.mapper.toModel(input, existing);
     const updated = await this.service.update(existing, entity);
     return this.mapper.toOutput(updated);
