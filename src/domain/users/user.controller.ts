@@ -250,6 +250,16 @@ export class UserController {
     return this.mapper.toOutput(updated);
   }
 
+  @Delete('me/profile-image')
+  @ApiBearerAuth()
+  @ApiException(() => [NotFoundException])
+  async deleteMyProfileImage(@CurrentUser() user: User): Promise<UserOutput> {
+    const updated = await this.service.deleteProfileImage({
+      id: user.id,
+    });
+    return this.mapper.toOutput(updated);
+  }
+
   @Delete(':id/profile-image')
   @Roles([UserRole.ADMIN])
   @ApiBearerAuth()
@@ -259,16 +269,6 @@ export class UserController {
   ): Promise<UserOutput> {
     const updated = await this.service.deleteProfileImage({
       id,
-    });
-    return this.mapper.toOutput(updated);
-  }
-
-  @Delete('me/profile-image')
-  @ApiBearerAuth()
-  @ApiException(() => [NotFoundException])
-  async deleteMyProfileImage(@CurrentUser() user: User): Promise<UserOutput> {
-    const updated = await this.service.deleteProfileImage({
-      id: user.id,
     });
     return this.mapper.toOutput(updated);
   }
