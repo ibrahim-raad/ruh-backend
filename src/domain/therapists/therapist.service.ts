@@ -35,11 +35,14 @@ export class TherapistService extends CrudService<Therapist, TherapistAudit> {
   }
 
   public async find(
-    criteria: SearchTherapist,
+    criteria: SearchTherapist & { user_id?: string },
   ): Promise<FindOutputDto<Therapist>> {
     const where = {
       ...(isDefined(criteria.name) && {
         name: ILike('%' + criteria.name + '%'),
+      }),
+      ...(isDefined(criteria.user_id) && {
+        therapist: { user: { id: criteria.user_id } },
       }),
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };

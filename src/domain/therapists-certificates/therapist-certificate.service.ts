@@ -70,7 +70,7 @@ export class TherapistCertificateService extends CrudService<
   }
 
   public async find(
-    criteria: SearchTherapistCertificate,
+    criteria: SearchTherapistCertificate & { user_id?: string },
   ): Promise<FindOutputDto<TherapistCertificate>> {
     const where = {
       ...(isDefined(criteria.title) && {
@@ -90,6 +90,9 @@ export class TherapistCertificateService extends CrudService<
       }),
       ...(isDefined(criteria.therapist_id) && {
         therapist: { id: criteria.therapist_id },
+      }),
+      ...(isDefined(criteria.user_id) && {
+        therapist: { user: { id: criteria.user_id } },
       }),
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };

@@ -13,12 +13,16 @@ import {
 } from 'typeorm';
 
 @Entity('therapists_certificates')
-@Index(['file_url'])
+@Index(['therapist'])
+@Index(['title'])
+@Index(['issuer'])
+@Index(['issued_date'])
+@Index(['specialization'])
 export class TherapistCertificate extends AbstractEntity {
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  @Column({ nullable: false, length: 255, unique: true })
-  file_url: string;
+  @Column({ nullable: true, length: 255, unique: true })
+  file_url?: string;
 
   @IsOptional()
   @IsString()

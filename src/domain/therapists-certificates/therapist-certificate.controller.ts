@@ -45,7 +45,6 @@ import { User } from '../users/entities/user.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerConfig } from 'src/utils/multer-config.utils';
 import { MulterExceptionFilter } from 'src/filters/multer-exception.filter';
-import { TherapistCertificate } from './entities/therapist-certificate.entity';
 
 @ApiTags('Therapists Certificates')
 @Controller('/api/v1/therapists-certificates')
@@ -60,49 +59,19 @@ export class TherapistCertificateController {
   @Post()
   @Roles(UserRole.THERAPIST)
   @ApiBearerAuth()
-  @UseInterceptors(
-    ClassSerializerInterceptor,
-    FileInterceptor(
-      'file',
-      multerConfig(
-        'therapists/certificates',
-        '10MB',
-        /\.(pdf|jpg|jpeg|png|webp)$/i,
-      ),
-    ),
-  )
-  @UseFilters(MulterExceptionFilter)
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        title: { type: 'string' },
-        issuer: { type: 'string' },
-        issued_date: { type: 'string', format: 'date-time' },
-        description: { type: 'string' },
-        specialization_id: { type: 'string', format: 'uuid' },
-        file: { type: 'string', format: 'binary' },
-      },
-      required: ['title', 'issuer', 'issued_date', 'file'],
-    },
-  })
+  @UseInterceptors(ClassSerializerInterceptor)
   @ApiException(() => [BadRequestException, ConflictException])
   async create(
     @Body() input: CreateTherapistCertificate,
     @CurrentUser() user: User,
-    @UploadedFile() file: Express.Multer.File,
   ): Promise<TherapistCertificateOutput> {
-    if (!file) {
-      throw new BadRequestException('File is required');
-    }
     const entity = this.mapper.toModel(input);
-    entity.file_url = `/uploads/therapists/certificates/${file.filename}`;
     const created = await this.service.create({ ...entity, userId: user.id });
     return this.mapper.toOutput(created);
   }
 
   @Get()
+  @Roles(UserRole.ADMIN)
   @ApiBearerAuth()
   @ApiPageResponse(TherapistCertificateOutput)
   @ApiException(() => [BadRequestException])
@@ -110,6 +79,25 @@ export class TherapistCertificateController {
     @Query() criteria: SearchTherapistCertificate,
   ): Promise<PageOutput<TherapistCertificateOutput>> {
     const { items, total } = await this.service.find(criteria);
+    return {
+      hasNext: items.length === criteria.limit,
+      items: items.map((item) => this.mapper.toOutput(item)),
+      total,
+    };
+  }
+
+  @Get('mine')
+  @ApiBearerAuth()
+  @ApiPageResponse(TherapistCertificateOutput)
+  @ApiException(() => [BadRequestException])
+  public async listMine(
+    @CurrentUser() user: User,
+    @Query() criteria: SearchTherapistCertificate,
+  ): Promise<PageOutput<TherapistCertificateOutput>> {
+    const { items, total } = await this.service.find({
+      ...criteria,
+      user_id: user.id,
+    });
     return {
       hasNext: items.length === criteria.limit,
       items: items.map((item) => this.mapper.toOutput(item)),
