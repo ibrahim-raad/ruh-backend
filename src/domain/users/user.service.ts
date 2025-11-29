@@ -33,6 +33,9 @@ export class UserService extends CrudService<User, UserAudit> {
   ) {
     super(User, repository, auditRepository, {
       country: true,
+      userSpokenLanguages: {
+        language: true,
+      },
     });
   }
 

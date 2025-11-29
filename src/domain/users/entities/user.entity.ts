@@ -12,6 +12,7 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   RelationId,
 } from 'typeorm';
 import { UserRole } from '../shared/user-role.enum';
@@ -20,6 +21,7 @@ import { UserGender } from '../shared/user-gender.enum';
 import { UserEmailStatus } from '../shared/user-email-status.enum';
 import { Country } from 'src/domain/countries/entities/country.entity';
 import { Type } from 'class-transformer';
+import { UserSpokenLanguage } from 'src/domain/users-spoken-languages/entities/user-spoken-language.entity';
 
 @Entity('users')
 @Index(['email'])
@@ -112,4 +114,10 @@ export class User extends AbstractEntity {
   @IsDate()
   @Column({ nullable: true, type: 'timestamp' })
   token_expires_at?: Date;
+
+  @OneToMany(
+    () => UserSpokenLanguage,
+    (userSpokenLanguage) => userSpokenLanguage.user,
+  )
+  userSpokenLanguages?: UserSpokenLanguage[];
 }

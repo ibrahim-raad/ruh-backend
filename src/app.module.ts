@@ -44,6 +44,7 @@ import { ChatMessageModule } from './domain/chats-messages/chat-message.module';
 import { AssignedExerciseModule } from './domain/assigned-exercises/assigned-exercise.module';
 import { NotificationModule } from './domain/notifications/notification.module';
 import { PatientFileDocumentModule } from './domain/patients-files-documents/patient-file-document.module';
+import { TherapistCertificateModule } from './domain/therapists-certificates/therapist-certificate.module';
 
 @Module({})
 export class AppModule {
@@ -122,6 +123,7 @@ export class AppModule {
         AssignedExerciseModule,
         NotificationModule,
         PatientFileDocumentModule,
+        TherapistCertificateModule,
       ],
       controllers: [AppController],
       providers: [

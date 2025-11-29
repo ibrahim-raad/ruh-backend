@@ -17,8 +17,8 @@ export class TherapistMapper {
     private readonly currencyMapper: CurrencyMapper,
   ) {}
   public toModel(input: UpdateTherapist, existing: Therapist): Therapist {
-    if (isDefined(input.version) && isDefined(existing?.version)) {
-      if (!isEqual(input.version, existing?.version)) {
+    if (isDefined(input.therapist_version) && isDefined(existing?.version)) {
+      if (!isEqual(input.therapist_version, existing?.version)) {
         throw new ConflictUpdateError();
       }
     }

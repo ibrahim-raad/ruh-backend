@@ -13,6 +13,8 @@ import { CountryMapper } from '../countries/country.mapper';
 import { SignupUser } from '../auth/dto/signup-user.dto';
 import { UserGender } from './shared/user-gender.enum';
 import { UserPasswordStrategy } from './user-password-strategy.service';
+import { LanguageOutput } from '../languages/dto/language.output';
+import { UserSpokenLanguage } from '../users-spoken-languages/entities/user-spoken-language.entity';
 
 @Injectable()
 export class UserMapper {
@@ -89,10 +91,23 @@ export class UserMapper {
       status: input.status,
       email_status: input.email_status,
       profile_url: input.profile_url,
+      spoken_languages: input.userSpokenLanguages
+        ? input.userSpokenLanguages.map((language) =>
+            this.toLanguageOutput(language),
+          )
+        : [],
       version: input.version,
       created_at: input.created_at,
       updated_at: input.updated_at,
       deleted_at: input.deleted_at,
+    });
+  }
+
+  private toLanguageOutput(input: UserSpokenLanguage): LanguageOutput {
+    return Object.assign(new LanguageOutput(), {
+      id: input.id,
+      name: input.language?.name,
+      code: input.language?.code,
     });
   }
 }

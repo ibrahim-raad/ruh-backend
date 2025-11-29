@@ -33,6 +33,9 @@ export class TherapistAvailabilityService extends CrudService<
       ...(isDefined(criteria.days_of_week) && {
         day_of_week: In(criteria.days_of_week),
       }),
+      ...(isDefined(criteria.therapist_id) && {
+        therapist: { id: criteria.therapist_id },
+      }),
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 

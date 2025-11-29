@@ -8,12 +8,16 @@ import { TherapistCertificateController } from './therapist-certificate.controll
 import { TherapistCertificateAudit } from './entities/therapist-certificate.entity.audit';
 import { TherapistCertificateSubscriber } from './entities/therapist-certificate.entity.subscriber';
 import { TherapistCertificateMapper } from './therapist-certificate.mapper';
+import { TherapistModule } from '../therapists/therapist.module';
+import { SpecializationModule } from '../specializations/specialization.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([TherapistCertificate, TherapistCertificateAudit]),
     ClsModule,
     EventEmitterModule,
+    TherapistModule,
+    SpecializationModule,
   ],
   providers: [
     TherapistCertificateService,

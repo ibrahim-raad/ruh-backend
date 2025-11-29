@@ -3,6 +3,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  IsUUID,
   Max,
   Min,
 } from 'class-validator';
@@ -35,4 +36,8 @@ export class SearchTherapistAvailability implements Pageable {
   @IsArrayOrSingle()
   @IsEnum(DayOfWeek, { each: true })
   readonly days_of_week?: DayOfWeek[];
+
+  @IsOptional()
+  @IsUUID()
+  readonly therapist_id?: string;
 }

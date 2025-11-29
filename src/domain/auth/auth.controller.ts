@@ -37,17 +37,30 @@ export class AuthController {
     private readonly mapper: UserMapper,
   ) {}
 
-  @Post('signup')
+  @Post('register')
   @Public()
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiException(() => [BadRequestException, ConflictException])
-  async signup(@Body() input: SignupUser): Promise<AuthOutput> {
+  async signup(
+    @Body() input: SignupUser,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<AuthOutput> {
     const entity = this.mapper.toModel(input);
-    const created = await this.service.signup(entity);
-    const user = this.mapper.toOutput(created.user);
+    const { user, tokens } = await this.service.signup(entity);
+    const { access_token, refresh_token } = tokens;
+    const output = this.mapper.toOutput(user);
+    res.cookie('refreshToken', refresh_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: '/',
+      maxAge: REFRESH_TOKEN_MAX_AGE,
+    });
     return {
-      user,
-      tokens: created.tokens,
+      user: output,
+      tokens: {
+        access_token,
+      },
     };
   }
 

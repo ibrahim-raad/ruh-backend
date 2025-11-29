@@ -58,7 +58,7 @@ export class TherapistSpecializationService extends CrudService<
         const restored = await this.restore({ id: existing.id });
         return restored;
       }
-      throw new ConflictException('Therapist specialization already exists');
+      return existing;
     }
     const specialization = await this.specializationService.one({
       id: input.specialization.id,
