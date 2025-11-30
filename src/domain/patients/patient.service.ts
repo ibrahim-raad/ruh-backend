@@ -21,6 +21,7 @@ export class PatientService extends CrudService<Patient, PatientAudit> {
     super(Patient, repository, auditRepository, {
       user: {
         country: true,
+        userSpokenLanguages: true,
       },
     });
   }
