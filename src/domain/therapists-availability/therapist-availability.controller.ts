@@ -1,20 +1,16 @@
 import {
   Controller,
-  Post,
   Body,
   Param,
   Patch,
   Get,
   BadRequestException,
   ConflictException,
-  UseInterceptors,
-  ClassSerializerInterceptor,
   Query,
   NotFoundException,
   Delete,
   ParseUUIDPipe,
   UseGuards,
-  ForbiddenException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { ApiException, ApiPageResponse } from 'src/domain/shared/decorators';
@@ -158,23 +154,13 @@ export class TherapistAvailabilityController {
   }
 
   @Delete('permanent/:id')
-  @Roles([UserRole.ADMIN, UserRole.THERAPIST])
+  @Roles(UserRole.ADMIN)
   @ApiBearerAuth()
   @ApiException(() => [NotFoundException])
   async permanentDelete(
     @Param('id', ParseUUIDPipe) id: string,
-    @CurrentUser() user?: User,
   ): Promise<{ message: string }> {
-    let condition = {};
-    if (user?.role === UserRole.THERAPIST) {
-      condition = {
-        therapist: { user: { id: user?.id } },
-      };
-    }
-    await this.service.permanentDelete({
-      id,
-      ...condition,
-    });
+    await this.service.permanentDelete({ id });
     return { message: 'TherapistAvailability permanently deleted' };
   }
 

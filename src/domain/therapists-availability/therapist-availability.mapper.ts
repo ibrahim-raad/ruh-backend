@@ -28,6 +28,7 @@ export class TherapistAvailabilityMapper {
       end_time: input.end_time ?? existing?.end_time,
       break_start_time: input.break_start_time ?? existing?.break_start_time,
       break_end_time: input.break_end_time ?? existing?.break_end_time,
+      is_active: input.is_active ?? existing?.is_active,
     };
     return Object.assign(new TherapistAvailability(), existing ?? {}, data);
   }

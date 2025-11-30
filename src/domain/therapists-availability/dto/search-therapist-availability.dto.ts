@@ -40,4 +40,8 @@ export class SearchTherapistAvailability implements Pageable {
   @IsOptional()
   @IsUUID()
   readonly therapist_id?: string;
+
+  @IsOptional()
+  @IsBooleanish()
+  readonly is_active?: boolean;
 }

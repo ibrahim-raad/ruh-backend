@@ -7,6 +7,7 @@ import {
   IsString,
 } from 'class-validator';
 import { DayOfWeek } from '../shared/day-of-week.enum';
+import { IsBooleanish } from 'src/domain/shared/decorators';
 
 export class UpdateTherapistAvailability {
   @IsOptional()
@@ -32,6 +33,10 @@ export class UpdateTherapistAvailability {
   @IsString()
   @IsMilitaryTime()
   readonly break_end_time?: string;
+
+  @IsOptional()
+  @IsBooleanish()
+  readonly is_active?: boolean;
 
   @IsNotEmpty()
   @IsNumber()

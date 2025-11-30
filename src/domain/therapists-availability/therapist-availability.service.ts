@@ -36,6 +36,7 @@ export class TherapistAvailabilityService extends CrudService<
       ...(isDefined(criteria.therapist_id) && {
         therapist: { id: criteria.therapist_id },
       }),
+      ...(isDefined(criteria.is_active) && { is_active: criteria.is_active }),
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
