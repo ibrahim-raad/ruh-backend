@@ -59,6 +59,16 @@ export class TherapistAvailabilityListener {
         day_of_week: DayOfWeek.FRIDAY,
         therapist,
       }),
+      this.defaultAvailabilityObject({
+        day_of_week: DayOfWeek.SATURDAY,
+        therapist,
+        is_active: false,
+      }),
+      this.defaultAvailabilityObject({
+        day_of_week: DayOfWeek.SUNDAY,
+        therapist,
+        is_active: false,
+      }),
     ];
   }
   private defaultAvailabilityObject(

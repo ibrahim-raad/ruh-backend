@@ -24,7 +24,9 @@ export class AdminService extends CrudService<Admin, AdminAudit> {
     super(Admin, repository, auditRepository, {
       user: {
         country: true,
-        userSpokenLanguages: true,
+        userSpokenLanguages: {
+          language: true,
+        },
       },
     });
   }

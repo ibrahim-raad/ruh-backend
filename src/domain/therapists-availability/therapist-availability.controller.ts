@@ -158,13 +158,23 @@ export class TherapistAvailabilityController {
   }
 
   @Delete('permanent/:id')
-  @Roles(UserRole.ADMIN)
+  @Roles([UserRole.ADMIN, UserRole.THERAPIST])
   @ApiBearerAuth()
   @ApiException(() => [NotFoundException])
   async permanentDelete(
     @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() user?: User,
   ): Promise<{ message: string }> {
-    await this.service.permanentDelete({ id });
+    let condition = {};
+    if (user?.role === UserRole.THERAPIST) {
+      condition = {
+        therapist: { user: { id: user?.id } },
+      };
+    }
+    await this.service.permanentDelete({
+      id,
+      ...condition,
+    });
     return { message: 'TherapistAvailability permanently deleted' };
   }
 

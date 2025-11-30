@@ -105,9 +105,10 @@ export class UserMapper {
 
   private toLanguageOutput(input: UserSpokenLanguage): LanguageOutput {
     return Object.assign(new LanguageOutput(), {
-      id: input.id,
+      id: input.languageId,
       name: input.language?.name,
       code: input.language?.code,
+      is_primary: input.is_primary,
     });
   }
 }

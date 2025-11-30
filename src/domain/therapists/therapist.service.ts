@@ -21,7 +21,9 @@ export class TherapistService extends CrudService<Therapist, TherapistAudit> {
     super(Therapist, repository, auditRepository, {
       user: {
         country: true,
-        userSpokenLanguages: true,
+        userSpokenLanguages: {
+          language: true,
+        },
       },
       currency: true,
       therapistSpecializations: {

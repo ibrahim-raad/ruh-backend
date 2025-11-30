@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsEnum,
   IsMilitaryTime,
   IsNotEmpty,
@@ -62,4 +63,9 @@ export class TherapistAvailability extends AbstractEntity {
   @IsMilitaryTime()
   @Column({ nullable: false, length: 5, default: '13:00' })
   break_end_time: string = '13:00'; // HH:MM format
+
+  @IsOptional()
+  @IsBoolean()
+  @Column({ nullable: false, default: true })
+  is_active: boolean = true;
 }

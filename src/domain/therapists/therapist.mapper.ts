@@ -40,6 +40,7 @@ export class TherapistMapper {
       payout_method_status: existing?.payout_method_status,
       balance_collected: existing?.balance_collected,
       balance_available: existing?.balance_available,
+      user: this.userMapper.toModel(input, existing.user),
     };
     return Object.assign(new Therapist(), existing ?? {}, data);
   }
@@ -78,7 +79,7 @@ export class TherapistMapper {
   ): SpecializationOutput[] {
     return input.map((ths) => {
       return {
-        id: ths.specialization.id,
+        id: ths.specializationId,
         name: ths.specialization.name,
         description: ths.specialization.description,
       };

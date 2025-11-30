@@ -9,6 +9,8 @@ import { UserSpokenLanguageAudit } from './entities/user-spoken-language.entity.
 import { LanguageService } from '../languages/language.service';
 import { DataSource } from 'typeorm';
 import { FindOutputDto } from '../shared/dto/find-output,dto';
+import { UserService } from '../users/user.service';
+import { diff } from 'src/utils';
 
 @Injectable()
 export class UserSpokenLanguageService extends CrudService<
@@ -21,6 +23,7 @@ export class UserSpokenLanguageService extends CrudService<
     @InjectRepository(UserSpokenLanguageAudit)
     protected readonly auditRepository: Repository<UserSpokenLanguageAudit>,
     private readonly languageService: LanguageService,
+    private readonly userService: UserService,
     private readonly dataSource: DataSource,
   ) {
     super(UserSpokenLanguage, repository, auditRepository, {
@@ -30,14 +33,39 @@ export class UserSpokenLanguageService extends CrudService<
   }
 
   public async create(input: UserSpokenLanguage): Promise<UserSpokenLanguage> {
+    const language = await this.languageService.one({ id: input.language.id });
+    const user = await this.userService.one({ id: input.user.id });
+    const existing = await this.one(
+      {
+        user: { id: user.id },
+        language: { id: language.id },
+      },
+      {
+        user: true,
+        language: true,
+      },
+      false,
+      true,
+    );
+
+    if (existing) {
+      if (existing.deleted_at) {
+        const restored = await this.restore({ id: existing.id });
+        return restored;
+      }
+      if (existing.is_primary == input.is_primary) {
+        return existing;
+      }
+      return this.update(existing, input);
+    }
     return this.dataSource.transaction(async (manager) => {
       await this.validateInput(input);
       const repo = manager.getRepository(UserSpokenLanguage);
 
       const entity = repo.create({
         ...input,
-        language: { id: input.language.id },
-        user: { id: input.user.id },
+        language,
+        user,
       });
 
       if (entity.is_primary) {
@@ -52,18 +80,25 @@ export class UserSpokenLanguageService extends CrudService<
     old: UserSpokenLanguage,
     input: UserSpokenLanguage,
   ): Promise<UserSpokenLanguage> {
+    console.log('old:', old);
+    console.log('input:', input);
+    console.log('changes:', diff(old, input));
+
     return this.dataSource.transaction(async (manager) => {
-      const merged = Object.assign(new UserSpokenLanguage(), old, input);
-      await this.validateInput(merged);
+      const changes = diff(old, input);
+      if (changes) {
+        await this.validateInput(changes);
 
-      const repo = manager.getRepository(UserSpokenLanguage);
+        const repo = manager.getRepository(UserSpokenLanguage);
 
-      if (merged.is_primary) {
-        await this.clearPrimary(manager, old.userId);
-        merged.is_primary = true;
+        if (changes.is_primary) {
+          await this.clearPrimary(manager, old.userId);
+          changes.is_primary = true;
+        }
+
+        return await repo.save(changes);
       }
-
-      return await repo.save(merged);
+      return old;
     });
   }
 
