@@ -35,7 +35,7 @@ export class SearchTherapistException implements Pageable {
 
   @IsOptional()
   @IsBooleanish()
-  readonly is_available?: boolean = true;
+  readonly is_available?: boolean;
 
   @IsOptional()
   @IsUUID()

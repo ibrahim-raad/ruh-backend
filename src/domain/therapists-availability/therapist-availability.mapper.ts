@@ -45,6 +45,7 @@ export class TherapistAvailabilityMapper {
       therapist: input.therapist
         ? this.therapistMapper.toOutput(input.therapist)
         : undefined,
+      is_active: input.is_active,
       version: input.version,
       created_at: input.created_at,
       updated_at: input.updated_at,
