@@ -55,4 +55,8 @@ export class SearchTherapyCase implements Pageable {
   @IsOptional()
   @IsEnum(TherapyCaseStatus)
   readonly status?: TherapyCaseStatus;
+
+  @IsOptional()
+  @IsString()
+  readonly patient_name?: string;
 }

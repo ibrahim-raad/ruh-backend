@@ -71,14 +71,19 @@ export class TherapyCaseService extends CrudService<
     criteria: SearchTherapyCase,
   ): Promise<FindOutputDto<TherapyCase>> {
     const where = {
+      ...(isDefined(criteria.patient_name) && {
+        patient: {
+          user: { full_name: ILike('%' + criteria.patient_name + '%') },
+        },
+      }),
       ...(isDefined(criteria.patient_id) && {
-        patient_id: criteria.patient_id,
+        patient: { id: criteria.patient_id },
       }),
       ...(isDefined(criteria.therapist_id) && {
-        therapist_id: criteria.therapist_id,
+        therapist: { id: criteria.therapist_id },
       }),
       ...(isDefined(criteria.transferred_to_id) && {
-        transferred_to_id: criteria.transferred_to_id,
+        transferred_to: { id: criteria.transferred_to_id },
       }),
       ...(isDefined(criteria.type) && {
         type: criteria.type,
