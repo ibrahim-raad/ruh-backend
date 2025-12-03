@@ -9,6 +9,7 @@ import {
 } from 'class-validator';
 import { UserGender } from '../shared/user-gender.enum';
 import { Type } from 'class-transformer';
+import { UserStatus } from '../shared/user-status.enum';
 
 export class UpdateUser {
   @IsOptional()
@@ -18,6 +19,10 @@ export class UpdateUser {
   @IsOptional()
   @IsEnum(UserGender)
   readonly gender?: UserGender;
+
+  @IsOptional()
+  @IsEnum(UserStatus)
+  readonly status?: UserStatus;
 
   @IsOptional()
   @IsUUID()

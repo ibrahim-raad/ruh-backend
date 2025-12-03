@@ -2,8 +2,9 @@ import { IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 import { Pageable } from 'src/domain/shared/pageable.interface';
 import { DEFAULT_PAGE_SIZE } from 'src/app.constants';
 import { IsBooleanish } from 'src/domain/shared/decorators';
+import { SearchUser } from 'src/domain/users/dto/search-user.dto';
 
-export class SearchTherapist implements Pageable {
+export class SearchTherapist extends SearchUser implements Pageable {
   @IsOptional()
   @IsNumber()
   @Min(0)
@@ -21,8 +22,4 @@ export class SearchTherapist implements Pageable {
   @IsOptional()
   @IsBooleanish()
   readonly deleted_at?: boolean = false;
-
-  @IsOptional()
-  @IsString()
-  readonly name?: string;
 }

@@ -45,6 +45,7 @@ export class UserMapper {
           ? { id: input.country_id }
           : existing?.country,
         date_of_birth: input.date_of_birth ?? existing?.date_of_birth,
+        status: input.status ?? existing?.status,
       };
     } else if (input instanceof SignupUser) {
       data = {

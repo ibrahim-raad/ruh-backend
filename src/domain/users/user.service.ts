@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   DataSource,
@@ -20,6 +20,9 @@ import { Patient } from '../patients/entities/patient.entity';
 import { Therapist } from '../therapists/entities/therapist.entity';
 import * as path from 'path';
 import { FindOutputDto } from '../shared/dto/find-output,dto';
+import { ClsService } from 'nestjs-cls';
+import { SESSION_USER_KEY } from 'src/app.constants';
+import { UserRole } from './shared/user-role.enum';
 
 @Injectable()
 export class UserService extends CrudService<User, UserAudit> {
@@ -30,6 +33,7 @@ export class UserService extends CrudService<User, UserAudit> {
     protected readonly auditRepository: Repository<UserAudit>,
     private readonly countryService: CountryService,
     private readonly dataSource: DataSource,
+    private readonly clsService: ClsService,
   ) {
     super(User, repository, auditRepository, {
       country: true,
@@ -49,6 +53,17 @@ export class UserService extends CrudService<User, UserAudit> {
     if (input.country?.id !== old.countryId) {
       const country = await this.countryService.one({ id: input.country?.id });
       newInput = Object.assign(new User(), newInput, { country });
+    }
+
+    if (input.status !== old.status) {
+      const user = this.clsService.get<{ user: User | undefined }>(
+        SESSION_USER_KEY,
+      )?.user;
+      if (user?.role !== UserRole.ADMIN) {
+        throw new ForbiddenException(
+          'You are not authorized to update user status',
+        );
+      }
     }
     return super.update(old, newInput);
   }

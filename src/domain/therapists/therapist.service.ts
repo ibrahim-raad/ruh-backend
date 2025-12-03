@@ -40,9 +40,13 @@ export class TherapistService extends CrudService<Therapist, TherapistAudit> {
   public async find(
     criteria: SearchTherapist & { user_id?: string },
   ): Promise<FindOutputDto<Therapist>> {
+    const userWhere = this.userService.generateWhere(criteria);
+    const isNotEmpty = Object.keys(userWhere).length > 0;
     const where = {
-      ...(isDefined(criteria.name) && {
-        name: ILike('%' + criteria.name + '%'),
+      ...(isNotEmpty && {
+        user: {
+          ...userWhere,
+        },
       }),
       ...(isDefined(criteria.user_id) && {
         therapist: { user: { id: criteria.user_id } },

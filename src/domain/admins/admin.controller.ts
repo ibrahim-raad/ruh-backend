@@ -112,20 +112,20 @@ export class AdminController {
     return this.mapper.toOutput(updated);
   }
 
-  @Get(':id')
-  @Roles(UserRole.ADMIN)
-  @ApiException(() => [NotFoundException])
-  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<AdminOutput> {
-    const found = await this.service.one({ id });
-    return this.mapper.toOutput(found);
-  }
-
   @Get('me')
   @Roles(UserRole.ADMIN)
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiException(() => [NotFoundException])
   async findMe(@CurrentUser() user: User): Promise<AdminOutput> {
     const found = await this.service.one({ user: { id: user.id } });
+    return this.mapper.toOutput(found);
+  }
+
+  @Get(':id')
+  @Roles(UserRole.ADMIN)
+  @ApiException(() => [NotFoundException])
+  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<AdminOutput> {
+    const found = await this.service.one({ id });
     return this.mapper.toOutput(found);
   }
 
