@@ -77,7 +77,7 @@ export class Session extends AbstractEntity {
 
   @IsOptional()
   @IsString()
-  @Column({ nullable: true, length: 255, unique: true })
+  @Column({ nullable: true, length: 255 })
   patient_feedback?: string;
 
   @IsOptional()
