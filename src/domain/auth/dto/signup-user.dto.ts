@@ -3,7 +3,7 @@ import {
   IsEnum,
   IsNotEmpty,
   IsString,
-  IsStrongPassword,
+  MinLength,
 } from 'class-validator';
 import { UserRole } from '../../users/shared/user-role.enum';
 
@@ -18,19 +18,7 @@ export class SignupUser {
 
   @IsNotEmpty()
   @IsString()
-  @IsStrongPassword(
-    {
-      minLength: 8,
-      minLowercase: 1,
-      minUppercase: 1,
-      minNumbers: 1,
-      minSymbols: 1,
-    },
-    {
-      message:
-        'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one symbol',
-    },
-  )
+  @MinLength(8)
   readonly password: string;
 
   @IsNotEmpty()
