@@ -6,6 +6,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { UserRole } from '../../users/shared/user-role.enum';
+import { Transform, TransformFnParams } from 'class-transformer';
 
 export class SignupUser {
   @IsNotEmpty()
@@ -14,6 +15,9 @@ export class SignupUser {
 
   @IsNotEmpty()
   @IsEmail()
+  @Transform(({ value }: TransformFnParams): string =>
+    (value as string)?.toLowerCase(),
+  )
   readonly email: string;
 
   @IsNotEmpty()

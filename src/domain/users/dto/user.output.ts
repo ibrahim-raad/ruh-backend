@@ -4,6 +4,7 @@ import { UserGender } from '../shared/user-gender.enum';
 import { CountryOutput } from 'src/domain/countries/dto/country.output';
 import { UserStatus } from '../shared/user-status.enum';
 import { UserEmailStatus } from '../shared/user-email-status.enum';
+import { LanguageOutput } from 'src/domain/languages/dto/language.output';
 
 export class UserOutput extends AuditableOutput {
   readonly full_name: string;
@@ -16,4 +17,5 @@ export class UserOutput extends AuditableOutput {
   readonly profile_url?: string;
   readonly status: UserStatus;
   readonly email_status: UserEmailStatus;
+  readonly spoken_languages?: LanguageOutput[];
 }
