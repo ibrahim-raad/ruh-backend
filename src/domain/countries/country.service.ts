@@ -20,6 +20,7 @@ export class CountryService extends CrudService<Country, CountryAudit> {
   }
 
   public async find(criteria: SearchCountry): Promise<FindOutputDto<Country>> {
+    console.log('find', criteria);
     const where = {
       ...(isDefined(criteria.name) && { name: ILike(`%${criteria.name}%`) }),
       ...(criteria.deleted_at && {

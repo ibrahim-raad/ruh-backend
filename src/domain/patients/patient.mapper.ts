@@ -31,6 +31,8 @@ export class PatientMapper {
   }
 
   public toOutput(input: Patient): PatientOutput {
+    console.log('patient.toOutput', input);
+
     return Object.assign(new PatientOutput(), {
       id: input.id,
       user: input.user ? this.userMapper.toOutput(input.user) : undefined,

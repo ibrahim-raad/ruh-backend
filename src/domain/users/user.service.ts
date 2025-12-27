@@ -65,7 +65,10 @@ export class UserService extends CrudService<User, UserAudit> {
         );
       }
     }
-    return super.update(old, newInput);
+
+    const updated = await super.update(old, newInput);
+    const refetch = await this.one({ id: updated.id });
+    return refetch;
   }
 
   public async createUserWithPatient(input: User): Promise<User> {
@@ -147,7 +150,6 @@ export class UserService extends CrudService<User, UserAudit> {
       );
       this.removeFile(filePath);
     }
-    user.profile_url = undefined;
-    return this.repository.save(user);
+    return this.repository.save({ ...user, profile_url: '' });
   }
 }

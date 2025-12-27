@@ -29,8 +29,11 @@ export class PatientService extends CrudService<Patient, PatientAudit> {
   }
 
   public async update(old: Patient, input: Patient): Promise<Patient> {
-    await this.userService.update(old.user, input.user);
-    return super.update(old, input);
+    const user = await this.userService.update(old.user, input.user);
+    const patient = await super.update(old, input);
+    const updated = Object.assign(new Patient(), patient, { user });
+    console.log('patient.update', updated);
+    return updated;
   }
 
   public async find(criteria: SearchPatient): Promise<FindOutputDto<Patient>> {
