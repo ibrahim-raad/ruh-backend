@@ -30,6 +30,9 @@ import { AuditSearchInput } from '../shared/dto/audit-search.dto';
 import { AuditOutput } from '../shared/dto/audit-output.dto';
 import { User } from '../users/entities/user.entity';
 import { CurrentUser } from '../shared/decorators/current-user.decorator';
+import { UserSpokenLanguageMapper } from '../users-spoken-languages/user-spoken-language.mapper';
+import { UserSpokenLanguageService } from '../users-spoken-languages/user-spoken-language.service';
+import { UserSpokenLanguage } from '../users-spoken-languages/entities/user-spoken-language.entity';
 
 @ApiTags('Patients')
 @Controller('/api/v1/patients')
@@ -38,6 +41,8 @@ export class PatientController {
   constructor(
     private readonly service: PatientService,
     private readonly mapper: PatientMapper,
+    private readonly userSpokenLanguageService: UserSpokenLanguageService,
+    private readonly userSpokenLanguageMapper: UserSpokenLanguageMapper,
   ) {}
 
   @Get()
@@ -102,6 +107,19 @@ export class PatientController {
   ): Promise<PatientOutput> {
     const existing = await this.service.one({ user: { id: user.id } });
     const entity = this.mapper.toModel(input, existing);
+    const spokenLanguages = (input.spoken_languages ?? []).map(
+      (spokenLanguage) => {
+        return {
+          ...this.userSpokenLanguageMapper.toModel(spokenLanguage),
+          user: { id: user.id },
+        };
+      },
+    );
+    for (const spokenLanguage of spokenLanguages) {
+      await this.userSpokenLanguageService.create(
+        spokenLanguage as UserSpokenLanguage,
+      );
+    }
     const updated = await this.service.update(existing, entity);
     return this.mapper.toOutput(updated);
   }

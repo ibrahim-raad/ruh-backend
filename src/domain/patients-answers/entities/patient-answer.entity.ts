@@ -13,10 +13,10 @@ import {
 } from 'typeorm';
 
 @Entity('patients_answers')
-@Index(['question', 'possible_answer', 'patient'], { unique: true })
 @Index(['question'])
 @Index(['possible_answer'])
 @Index(['patient'])
+@Index(['question', 'possible_answer', 'patient'])
 export class PatientAnswer extends AbstractEntity {
   @IsOptional()
   @IsString()

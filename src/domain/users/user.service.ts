@@ -67,8 +67,7 @@ export class UserService extends CrudService<User, UserAudit> {
     }
 
     const updated = await super.update(old, newInput);
-    const refetch = await this.one({ id: updated.id });
-    return refetch;
+    return updated;
   }
 
   public async createUserWithPatient(input: User): Promise<User> {

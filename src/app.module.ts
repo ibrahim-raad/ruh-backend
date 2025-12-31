@@ -45,6 +45,7 @@ import { AssignedExerciseModule } from './domain/assigned-exercises/assigned-exe
 import { NotificationModule } from './domain/notifications/notification.module';
 import { PatientFileDocumentModule } from './domain/patients-files-documents/patient-file-document.module';
 import { TherapistCertificateModule } from './domain/therapists-certificates/therapist-certificate.module';
+import { FullQuestionnaireModule } from './domain/full-questionnaire/full-questionnaire.module';
 
 @Module({})
 export class AppModule {
@@ -106,6 +107,7 @@ export class AppModule {
         QuestionnaireModule,
         QuestionModule,
         PossibleAnswerModule,
+        FullQuestionnaireModule,
         TherapistSpecializationModule,
         TherapistSettingsModule,
         TherapistAvailabilityModule,

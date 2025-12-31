@@ -35,7 +35,7 @@ export class SearchPossibleAnswer implements Pageable {
 
   @IsOptional()
   @IsUUID()
-  readonly question_id?: string;
+  question_id?: string;
 
   @IsOptional()
   @IsUUID()

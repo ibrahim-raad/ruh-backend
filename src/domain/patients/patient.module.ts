@@ -9,6 +9,7 @@ import { PatientAudit } from './entities/patient.entity.audit';
 import { PatientSubscriber } from './entities/patient.entity.subscriber';
 import { PatientMapper } from './patient.mapper';
 import { UserModule } from '../users/user.module';
+import { UserSpokenLanguageModule } from '../users-spoken-languages/user-spoken-language.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UserModule } from '../users/user.module';
     ClsModule,
     EventEmitterModule,
     UserModule,
+    UserSpokenLanguageModule,
   ],
   providers: [PatientService, PatientSubscriber, PatientMapper],
   controllers: [PatientController],

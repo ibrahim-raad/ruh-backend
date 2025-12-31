@@ -43,5 +43,5 @@ export class SearchQuestion implements Pageable {
 
   @IsOptional()
   @IsUUID()
-  readonly questionnaire_id?: string;
+  questionnaire_id?: string;
 }
