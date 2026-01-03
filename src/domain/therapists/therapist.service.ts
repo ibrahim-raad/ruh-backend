@@ -8,6 +8,9 @@ import { SearchTherapist } from './dto/search-therapist.dto';
 import { TherapistAudit } from './entities/therapist.entity.audit';
 import { UserService } from '../users/user.service';
 import { FindOutputDto } from '../shared/dto/find-output,dto';
+import { User } from '../users/entities/user.entity';
+import { UserRole } from '../users/shared/user-role.enum';
+import { UserStatus } from '../users/shared/user-status.enum';
 
 @Injectable()
 export class TherapistService extends CrudService<Therapist, TherapistAudit> {
@@ -39,18 +42,25 @@ export class TherapistService extends CrudService<Therapist, TherapistAudit> {
 
   public async find(
     criteria: SearchTherapist & { user_id?: string },
+    currentUser: User,
   ): Promise<FindOutputDto<Therapist>> {
     const userWhere = this.userService.generateWhere(criteria);
     const isNotEmpty = Object.keys(userWhere).length > 0;
+    const notAdminCondition =
+      currentUser.role !== UserRole.ADMIN
+        ? {
+            ...(isDefined(criteria.user_id) && {
+              id: criteria.user_id,
+            }),
+            status: UserStatus.ACTIVE,
+          }
+        : {};
     const where = {
-      ...(isNotEmpty && {
-        user: {
-          ...userWhere,
-        },
-      }),
-      ...(isDefined(criteria.user_id) && {
-        therapist: { user: { id: criteria.user_id } },
-      }),
+      user: {
+        ...notAdminCondition,
+        ...(isNotEmpty && { ...userWhere }),
+      },
+
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 

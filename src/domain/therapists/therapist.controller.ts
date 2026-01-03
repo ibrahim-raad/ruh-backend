@@ -47,8 +47,9 @@ export class TherapistController {
   @ApiException(() => [BadRequestException])
   public async list(
     @Query() criteria: SearchTherapist,
+    @CurrentUser() user: User,
   ): Promise<PageOutput<TherapistOutput>> {
-    const { items, total } = await this.service.find(criteria);
+    const { items, total } = await this.service.find(criteria, user);
     return {
       hasNext: items.length === criteria.limit,
       items: items.map((item) => this.mapper.toOutput(item)),

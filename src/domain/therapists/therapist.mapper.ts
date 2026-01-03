@@ -51,8 +51,10 @@ export class TherapistMapper {
       user: input.user ? this.userMapper.toOutput(input.user) : undefined,
       user_id: input.userId,
       bio: input.bio,
-      years_of_experience: input.years_of_experience,
-      rate_per_hour: input.rate_per_hour,
+      years_of_experience: parseFloat(
+        input.years_of_experience?.toString() ?? '0',
+      ),
+      rate_per_hour: parseFloat(input.rate_per_hour?.toString() ?? '0'),
       currency: input.currency
         ? this.currencyMapper.toOutput(input.currency)
         : undefined,
