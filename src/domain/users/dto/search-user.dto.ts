@@ -3,6 +3,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  IsUUID,
   Max,
   Min,
   ValidateNested,
@@ -67,4 +68,12 @@ export class SearchUser implements Pageable {
   @ValidateNested()
   @Type(() => DateStrictRangeInput)
   readonly date_of_birth_range?: DateStrictRangeInput;
+
+  @IsOptional()
+  @IsUUID()
+  readonly country_id?: string;
+
+  @IsOptional()
+  @IsUUID()
+  readonly language_id?: string;
 }

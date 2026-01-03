@@ -46,6 +46,8 @@ export class TherapistService extends CrudService<Therapist, TherapistAudit> {
   ): Promise<FindOutputDto<Therapist>> {
     const userWhere = this.userService.generateWhere(criteria);
     const isNotEmpty = Object.keys(userWhere).length > 0;
+    console.log('criteria', criteria);
+
     const notAdminCondition =
       currentUser.role !== UserRole.ADMIN
         ? {

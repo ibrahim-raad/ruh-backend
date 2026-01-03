@@ -109,6 +109,18 @@ export class UserService extends CrudService<User, UserAudit> {
       ...(isDefined(criteria.date_of_birth_range) && {
         date_of_birth: InRange(criteria.date_of_birth_range),
       }),
+      ...(isDefined(criteria.country_id) && {
+        country: {
+          id: criteria.country_id,
+        },
+      }),
+      ...(isDefined(criteria.language_id) && {
+        userSpokenLanguages: {
+          language: {
+            id: criteria.language_id,
+          },
+        },
+      }),
       ...(isDefined(criteria.gender) && { gender: criteria.gender }),
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
