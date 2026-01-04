@@ -9,12 +9,16 @@ import { UserMapper } from '../users/user.mapper';
 import { CurrencyMapper } from '../currencies/currency.mapper';
 import { TherapistSpecialization } from '../therapists-specializations/entities/therapist-specialization.entity';
 import { SpecializationOutput } from '../specializations/dto/specialization.output';
+import { TherapistCertificate } from '../therapists-certificates/entities/therapist-certificate.entity';
+import { TherapistCertificateOutput } from '../therapists-certificates/dto/therapist-certificate.output';
+import { SpecializationMapper } from '../specializations/specialization.mapper';
 
 @Injectable()
 export class TherapistMapper {
   constructor(
     private readonly userMapper: UserMapper,
     private readonly currencyMapper: CurrencyMapper,
+    private readonly specializationMapper: SpecializationMapper,
   ) {}
   public toModel(input: UpdateTherapist, existing: Therapist): Therapist {
     if (isDefined(input.therapist_version) && isDefined(existing?.version)) {
@@ -69,6 +73,9 @@ export class TherapistMapper {
       specializations: input.therapistSpecializations
         ? this.toSpecializationsOutput(input.therapistSpecializations)
         : [],
+      certificates: input.therapistCertificates
+        ? this.toCertificatesOutput(input.therapistCertificates)
+        : [],
       version: input.version,
       created_at: input.created_at,
       updated_at: input.updated_at,
@@ -85,6 +92,33 @@ export class TherapistMapper {
         name: ths.specialization.name,
         description: ths.specialization.description,
       };
+    });
+  }
+
+  public toCertificatesOutput(
+    input: TherapistCertificate[],
+  ): TherapistCertificateOutput[] {
+    return input.map((tc) => this.toCertificateOutput(tc));
+  }
+
+  public toCertificateOutput(
+    input: TherapistCertificate,
+  ): TherapistCertificateOutput {
+    return Object.assign(new TherapistCertificateOutput(), {
+      id: input.id,
+      title: input.title,
+      issuer: input.issuer,
+      issued_date: input.issued_date,
+      description: input.description,
+      specialization: input.specialization
+        ? this.specializationMapper.toOutput(input.specialization)
+        : undefined,
+      specialization_id: input.specializationId,
+      file_url: input.file_url,
+      version: input.version,
+      created_at: input.created_at,
+      updated_at: input.updated_at,
+      deleted_at: input.deleted_at,
     });
   }
 }

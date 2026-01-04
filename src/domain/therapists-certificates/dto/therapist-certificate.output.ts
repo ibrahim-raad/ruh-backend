@@ -11,4 +11,5 @@ export class TherapistCertificateOutput extends AuditableOutput {
   readonly specialization?: SpecializationOutput;
   readonly therapist_id?: string;
   readonly therapist?: TherapistOutput;
+  readonly file_url?: string;
 }

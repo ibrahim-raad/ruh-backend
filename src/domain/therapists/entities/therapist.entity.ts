@@ -23,6 +23,7 @@ import {
 } from 'typeorm';
 import { PayoutMethodStatus } from '../shared/payout-status.enum';
 import { TherapistSpecialization } from 'src/domain/therapists-specializations/entities/therapist-specialization.entity';
+import { TherapistCertificate } from 'src/domain/therapists-certificates/entities/therapist-certificate.entity';
 
 @Entity('therapists')
 @Index(['user'], { unique: true })
@@ -118,4 +119,10 @@ export class Therapist extends AbstractEntity {
     (therapistSpecialization) => therapistSpecialization.therapist,
   )
   therapistSpecializations?: TherapistSpecialization[];
+
+  @OneToMany(
+    () => TherapistCertificate,
+    (therapistCertificate) => therapistCertificate.therapist,
+  )
+  therapistCertificates?: TherapistCertificate[];
 }

@@ -10,6 +10,7 @@ import { TherapistSubscriber } from './entities/therapist.entity.subscriber';
 import { TherapistMapper } from './therapist.mapper';
 import { UserModule } from '../users/user.module';
 import { CurrencyModule } from '../currencies/currency.module';
+import { SpecializationModule } from '../specializations/specialization.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CurrencyModule } from '../currencies/currency.module';
     EventEmitterModule,
     UserModule,
     CurrencyModule,
+    SpecializationModule,
   ],
   providers: [TherapistService, TherapistSubscriber, TherapistMapper],
   controllers: [TherapistController],
