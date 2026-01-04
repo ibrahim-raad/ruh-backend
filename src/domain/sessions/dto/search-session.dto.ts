@@ -1,4 +1,5 @@
 import {
+  IsDate,
   IsEnum,
   IsNumber,
   IsOptional,
@@ -11,6 +12,7 @@ import { DEFAULT_PAGE_SIZE } from 'src/app.constants';
 import { IsBooleanish } from 'src/domain/shared/decorators';
 import { SessionType } from '../shared/session-type.enum';
 import { SessionStatus } from '../shared/session-status.enum';
+import { Type } from 'class-transformer';
 
 export class SearchSession implements Pageable {
   @IsOptional()
@@ -42,4 +44,14 @@ export class SearchSession implements Pageable {
   @IsOptional()
   @IsEnum(SessionStatus, { each: true })
   readonly statuses?: SessionStatus[];
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  readonly before_date?: Date;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  readonly after_date?: Date;
 }

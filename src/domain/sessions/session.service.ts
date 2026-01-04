@@ -1,6 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, In, IsNull, Not, Repository } from 'typeorm';
+import {
+  ILike,
+  In,
+  IsNull,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+  Not,
+  Repository,
+} from 'typeorm';
 import { CrudService } from 'src/domain/shared/abstract-crud.service';
 import { isDefined } from 'class-validator';
 import { Session } from './entities/session.entity';
@@ -67,6 +75,12 @@ export class SessionService extends CrudService<Session, SessionAudit> {
       }),
       ...(isDefined(criteria.therapy_case_id) && {
         therapy_case: { id: criteria.therapy_case_id },
+      }),
+      ...(isDefined(criteria.before_date) && {
+        start_time: LessThanOrEqual(criteria.before_date),
+      }),
+      ...(isDefined(criteria.after_date) && {
+        start_time: MoreThanOrEqual(criteria.after_date),
       }),
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
