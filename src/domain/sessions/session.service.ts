@@ -18,6 +18,7 @@ import { TherapyCaseService } from '../therapy-cases/therapy-case.service';
 import { TherapistSettingsService } from '../therapists-settings/therapist-settings.service';
 import { FindOutputDto } from '../shared/dto/find-output,dto';
 import { SessionStatus } from './shared/session-status.enum';
+import { DateTime } from 'luxon';
 
 @Injectable()
 export class SessionService extends CrudService<Session, SessionAudit> {
@@ -53,10 +54,24 @@ export class SessionService extends CrudService<Session, SessionAudit> {
     const therapistSettings = await this.therapistSettingsService.one({
       therapist: { id: therapyCase.therapist.id },
     });
-    const startTime = new Date(input.start_time);
+    const therapistTimezone = therapistSettings.timezone;
+    const day = DateTime.fromJSDate(input.start_time)
+      .setZone(therapistTimezone)
+      .startOf('day');
+    const [h, m] = input.start_time
+      .toISOString()
+      .split('T')[1]
+      .split(':')
+      .map(Number);
 
-    const sessionDuration = therapistSettings.session_duration_minutes;
-    const endTime = new Date(startTime.getTime() + sessionDuration * 60000); // we are multiplying by 60000 to convert minutes to milliseconds
+    const startDT = day.set({ hour: h, minute: m, second: 0, millisecond: 0 });
+    const endDT = startDT.plus({
+      minutes: therapistSettings.session_duration_minutes,
+    });
+
+    const startTime = startDT.toUTC().toJSDate();
+    const endTime = endDT.toUTC().toJSDate();
+
     // TODO: create session links
     const entity = Object.assign(new Session(), input, {
       therapy_case: therapyCase,

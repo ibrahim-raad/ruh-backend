@@ -5,6 +5,7 @@ declare module 'luxon' {
 
   export class DateTime {
     static now(): DateTime;
+    static fromISO(iso: string, options?: ToISOOptions): DateTime;
     static fromJSDate(date: Date): DateTime;
 
     setZone(zone: string): DateTime;
