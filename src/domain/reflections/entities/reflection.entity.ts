@@ -53,7 +53,7 @@ export class Reflection extends AbstractEntity {
     nullable: false,
     type: 'enum',
     enum: ReflectionMood,
-    default: ReflectionMood.NEUTRAL,
+    default: ReflectionMood.OKAY,
   })
-  mood: ReflectionMood = ReflectionMood.NEUTRAL;
+  mood: ReflectionMood = ReflectionMood.OKAY;
 }

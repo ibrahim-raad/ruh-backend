@@ -17,5 +17,5 @@ export class CreateReflection {
 
   @IsOptional()
   @IsEnum(ReflectionMood)
-  readonly mood: ReflectionMood = ReflectionMood.NEUTRAL;
+  readonly mood: ReflectionMood = ReflectionMood.OKAY;
 }
