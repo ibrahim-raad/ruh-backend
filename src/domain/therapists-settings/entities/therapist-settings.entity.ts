@@ -59,6 +59,13 @@ export class TherapistSettings extends AbstractEntity {
   session_duration_minutes: number = 60; // the duration of the session in minutes
 
   @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Max(60)
+  @Column({ nullable: false, type: 'integer', default: 10 })
+  buffer_minutes: number = 10; // minutes between sessions (slot step = session_duration + buffer)
+
+  @IsOptional()
   @IsTimeZone() // IANA timezone
   @Column({ nullable: false, length: 255, default: 'UTC' })
   timezone: string = 'UTC'; // the timezone of the therapist

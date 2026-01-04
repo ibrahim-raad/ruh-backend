@@ -29,6 +29,7 @@ export class TherapistSettingsMapper {
         input.max_sessions_per_day ?? existing?.max_sessions_per_day,
       session_duration_minutes:
         input.session_duration_minutes ?? existing?.session_duration_minutes,
+      buffer_minutes: input.buffer_minutes ?? existing?.buffer_minutes,
     };
 
     return Object.assign(new TherapistSettings(), existing ?? {}, data);
@@ -50,6 +51,7 @@ export class TherapistSettingsMapper {
       session_duration_minutes: parseFloat(
         input.session_duration_minutes.toString(),
       ),
+      buffer_minutes: parseFloat(input.buffer_minutes.toString()),
       timezone: input.timezone,
       version: input.version,
       created_at: input.created_at,

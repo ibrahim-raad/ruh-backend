@@ -9,5 +9,6 @@ export class TherapistSettingsOutput extends AuditableOutput {
   readonly max_booking_days: number;
   readonly max_sessions_per_day: number;
   readonly session_duration_minutes: number;
+  readonly buffer_minutes: number;
   readonly timezone: string;
 }

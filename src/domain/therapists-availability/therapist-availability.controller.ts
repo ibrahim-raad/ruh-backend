@@ -30,6 +30,8 @@ import { UserRole } from '../users/shared/user-role.enum';
 import { Roles } from 'src/guards/decorators/permissions.decorator';
 import { User } from '../users/entities/user.entity';
 import { CurrentUser } from '../shared/decorators/current-user.decorator';
+import { TherapistAvailabilityCalendarQuery } from './dto/therapist-availability-calendar.query';
+import { TherapistAvailabilityCalendarOutput } from './dto/therapist-availability-calendar.output';
 
 @ApiTags('TherapistsAvailability')
 @Controller('/api/v1/therapists-availability')
@@ -40,6 +42,14 @@ export class TherapistAvailabilityController {
     private readonly service: TherapistAvailabilityService,
     private readonly mapper: TherapistAvailabilityMapper,
   ) {}
+
+  @Get('calendar')
+  @ApiBearerAuth()
+  public async calendar(
+    @Query() query: TherapistAvailabilityCalendarQuery,
+  ): Promise<TherapistAvailabilityCalendarOutput> {
+    return this.service.getCalendar(query);
+  }
 
   @Get()
   @ApiBearerAuth()

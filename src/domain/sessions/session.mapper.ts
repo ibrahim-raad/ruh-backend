@@ -40,7 +40,9 @@ export class SessionMapper {
       data = {
         therapy_case: { id: input.therapy_case_id } as TherapyCase,
         start_time: startTime,
-        status: SessionStatus.PENDING,
+        // TODO: change to PENDING when we have a way to confirm sessions
+        // TODO: add a way to confirm sessions
+        status: SessionStatus.CONFIRMED,
       };
     }
     return Object.assign(new Session(), existing ?? {}, data);

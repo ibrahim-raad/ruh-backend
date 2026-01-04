@@ -1,0 +1,5 @@
+export enum AvailabilityCalendarSlotReason {
+  BOOKING_THRESHOLD = 'BOOKING_THRESHOLD',
+  BOOKED = 'BOOKED',
+  MAX_SESSIONS_PER_DAY = 'MAX_SESSIONS_PER_DAY',
+}

@@ -41,6 +41,12 @@ export class UpdateTherapistSettings {
   @Max(120)
   readonly session_duration_minutes?: number;
 
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Max(60)
+  readonly buffer_minutes?: number;
+
   @IsNotEmpty()
   @IsNumber()
   readonly version: number;

@@ -17,6 +17,7 @@ import { SessionAudit } from './entities/session.entity.audit';
 import { TherapyCaseService } from '../therapy-cases/therapy-case.service';
 import { TherapistSettingsService } from '../therapists-settings/therapist-settings.service';
 import { FindOutputDto } from '../shared/dto/find-output,dto';
+import { SessionStatus } from './shared/session-status.enum';
 
 @Injectable()
 export class SessionService extends CrudService<Session, SessionAudit> {
@@ -86,5 +87,27 @@ export class SessionService extends CrudService<Session, SessionAudit> {
     };
 
     return this.all(where, criteria, criteria.deleted_at);
+  }
+
+  public async findBlockingTherapistSessionsInRange(
+    therapistId: string,
+    rangeStart: Date,
+    rangeEnd: Date,
+    statuses: SessionStatus[] = [
+      SessionStatus.PENDING,
+      SessionStatus.CONFIRMED,
+      SessionStatus.RESCHEDULED,
+    ],
+  ): Promise<Session[]> {
+    const data = await this.repository.find({
+      where: {
+        therapy_case: { therapist: { id: therapistId } },
+        deleted_at: IsNull(),
+        status: In(statuses),
+        start_time: MoreThanOrEqual(rangeStart),
+        end_time: LessThanOrEqual(rangeEnd),
+      },
+    });
+    return data;
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, IsNull, Not, Repository } from 'typeorm';
+import { Between, ILike, IsNull, Not, Repository } from 'typeorm';
 import { CrudService } from 'src/domain/shared/abstract-crud.service';
 import { isDefined } from 'class-validator';
 import { TherapistException } from './entities/therapist-exception.entity';
@@ -64,5 +64,19 @@ export class TherapistExceptionService extends CrudService<
     };
 
     return this.all(where, criteria, criteria.deleted_at);
+  }
+
+  public async findTherapistExceptionsInRange(
+    therapistId: string,
+    rangeStart: Date,
+    rangeEnd: Date,
+  ): Promise<TherapistException[]> {
+    return this.repository.find({
+      where: {
+        therapist: { id: therapistId },
+        deleted_at: IsNull(),
+        date: Between(rangeStart, rangeEnd),
+      },
+    });
   }
 }

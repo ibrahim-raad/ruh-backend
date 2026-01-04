@@ -9,7 +9,11 @@ import { TherapistAvailabilityAudit } from './entities/therapist-availability.en
 import { TherapistAvailabilitySubscriber } from './entities/therapist-availability.entity.subscriber';
 import { TherapistAvailabilityMapper } from './therapist-availability.mapper';
 import { TherapistAvailabilityListener } from './therapist-availability.listener';
+import { TherapistAvailabilityCalendarMapper } from './therapist-availability-calendar.mapper';
 import { TherapistModule } from '../therapists/therapist.module';
+import { TherapistSettingsModule } from '../therapists-settings/therapist-settings.module';
+import { TherapistExceptionModule } from '../therapists-exceptions/therapist-exception.module';
+import { SessionModule } from '../sessions/session.module';
 
 @Module({
   imports: [
@@ -20,11 +24,15 @@ import { TherapistModule } from '../therapists/therapist.module';
     ClsModule,
     EventEmitterModule,
     TherapistModule,
+    TherapistSettingsModule,
+    TherapistExceptionModule,
+    SessionModule,
   ],
   providers: [
     TherapistAvailabilityService,
     TherapistAvailabilitySubscriber,
     TherapistAvailabilityMapper,
+    TherapistAvailabilityCalendarMapper,
     TherapistAvailabilityListener,
   ],
   controllers: [TherapistAvailabilityController],
