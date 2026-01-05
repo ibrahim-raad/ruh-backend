@@ -10,6 +10,10 @@ import { SessionSubscriber } from './entities/session.entity.subscriber';
 import { SessionMapper } from './session.mapper';
 import { TherapyCaseModule } from '../therapy-cases/therapy-case.module';
 import { TherapistSettingsModule } from '../therapists-settings/therapist-settings.module';
+import { SessionGateway } from './session.gateway';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule } from '@nestjs/config';
+import { UserModule } from '../users/user.module';
 
 @Module({
   imports: [
@@ -18,8 +22,11 @@ import { TherapistSettingsModule } from '../therapists-settings/therapist-settin
     EventEmitterModule,
     TherapyCaseModule,
     TherapistSettingsModule,
+    JwtModule.register({}),
+    ConfigModule,
+    UserModule,
   ],
-  providers: [SessionService, SessionSubscriber, SessionMapper],
+  providers: [SessionService, SessionSubscriber, SessionMapper, SessionGateway],
   controllers: [SessionController],
   exports: [SessionService, SessionMapper, TypeOrmModule],
 })
