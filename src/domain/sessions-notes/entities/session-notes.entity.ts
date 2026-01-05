@@ -14,7 +14,6 @@ import {
 @Index(['content'])
 @Index(['session'])
 export class SessionNotes extends AbstractEntity {
-  @IsNotEmpty()
   @IsString()
   @Column({ nullable: false, type: 'text', default: '' })
   content: string;

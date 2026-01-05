@@ -122,6 +122,8 @@ export class TherapistAvailabilityService extends CrudService<
         blockingStatuses,
       );
 
+    console.log('sessions', sessions);
+
     const sessionsByDate = new Map<
       string,
       { start: DateTime; end: DateTime }[]
@@ -135,6 +137,8 @@ export class TherapistAvailabilityService extends CrudService<
       list.push({ start, end });
       sessionsByDate.set(key, list);
     }
+
+    console.log('sessionsByDate', sessionsByDate);
 
     const now = DateTime.now().setZone(timezone);
     const leadTimeMinutes = settings.booking_threshold_hours * 60;

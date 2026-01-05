@@ -33,10 +33,7 @@ export class SessionMapper {
         patient_feedback: input.patient_feedback ?? existing?.patient_feedback,
       };
     } else {
-      const hours = parseInt(input.start_time.split(':')[0]);
-      const minutes = parseInt(input.start_time.split(':')[1]);
-      const startTime = new Date(input.date);
-      startTime.setHours(hours, minutes, 0, 0);
+      const startTime: Date = new Date(input.start);
       data = {
         therapy_case: { id: input.therapy_case_id } as TherapyCase,
         start_time: startTime,
@@ -55,6 +52,7 @@ export class SessionMapper {
       therapy_case: input.therapy_case
         ? this.therapyCaseMapper.toOutput(input.therapy_case)
         : undefined,
+      status: input.status,
       start_time: input.start_time,
       end_time: input.end_time,
       actual_start_time: input.actual_start_time,
