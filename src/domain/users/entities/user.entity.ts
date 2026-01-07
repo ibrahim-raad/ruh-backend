@@ -80,7 +80,7 @@ export class User extends AbstractEntity {
   })
   email_status: UserEmailStatus = UserEmailStatus.UNVERIFIED;
 
-  @IsNotEmpty()
+  @IsOptional()
   @ManyToOne(() => Country, {
     nullable: true,
     cascade: false,
