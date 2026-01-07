@@ -85,6 +85,12 @@ export class AuthService {
 
     const accessToken = await this.generateAccessToken(user);
     const refreshToken = await this.refreshTokenService.create(user);
+    await this.generateAndSendToken(
+      user,
+      NotificationType.EMAIL_VERIFICATION,
+      'Verify your email',
+      'Please verify your email to continue.',
+    );
     return {
       user,
       tokens: { access_token: accessToken, refresh_token: refreshToken.token },
@@ -158,7 +164,7 @@ export class AuthService {
     type: NotificationType,
     title: string,
     body: string,
-  ) {
+  ): Promise<void> {
     const token = crypto.randomBytes(40).toString('hex');
     const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24); // 24 hours
     await this.userService.update(user, {
