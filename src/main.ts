@@ -10,6 +10,7 @@ import * as path from 'path';
 import * as dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { SeederService } from './database/seeder/seeder.service';
 
 async function bootstrap(config: AppConfig) {
   const app = await NestFactory.create<NestExpressApplication>(
@@ -38,6 +39,15 @@ async function bootstrap(config: AppConfig) {
 
   const logger = app.get(Logger);
   app.useLogger(logger);
+
+  // Run seeder
+  try {
+    const seeder = app.get(SeederService);
+    await seeder.seed();
+    logger.log('Database seeded successfully');
+  } catch (error) {
+    logger.error('Seeding failed', error);
+  }
 
   // Setting globals
   useGlobalDefaults(app);
