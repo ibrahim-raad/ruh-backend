@@ -53,9 +53,6 @@ export class UserSpokenLanguageService extends CrudService<
         const restored = await this.restore({ id: existing.id });
         return restored;
       }
-      if (existing.is_primary == input.is_primary) {
-        return existing;
-      }
       return this.update(existing, input);
     }
     return this.dataSource.transaction(async (manager) => {
@@ -80,26 +77,22 @@ export class UserSpokenLanguageService extends CrudService<
     old: UserSpokenLanguage,
     input: UserSpokenLanguage,
   ): Promise<UserSpokenLanguage> {
-    console.log('old:', old);
-    console.log('input:', input);
-    console.log('changes:', diff(old, input));
-
-    return this.dataSource.transaction(async (manager) => {
-      const changes = diff(old, input);
-      if (changes) {
+    const changes = diff(old, input);
+    if (changes) {
+      return this.dataSource.transaction(async (manager) => {
         await this.validateInput(changes);
 
         const repo = manager.getRepository(UserSpokenLanguage);
 
-        if (changes.is_primary) {
+        if (changes.is_primary && !old.is_primary) {
           await this.clearPrimary(manager, old.userId);
-          changes.is_primary = true;
         }
 
-        return await repo.save(changes);
-      }
-      return old;
-    });
+        const updated = repo.merge(old, changes);
+        return await repo.save(updated);
+      });
+    }
+    return old;
   }
 
   private async clearPrimary(manager: EntityManager, userId: string) {

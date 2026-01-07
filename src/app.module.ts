@@ -47,6 +47,7 @@ import { PatientFileDocumentModule } from './domain/patients-files-documents/pat
 import { TherapistCertificateModule } from './domain/therapists-certificates/therapist-certificate.module';
 import { FullQuestionnaireModule } from './domain/full-questionnaire/full-questionnaire.module';
 import { SeederModule } from './database/seeder/seeder.module';
+import { PatientAnswerModule } from './domain/patients-answers/patient-answer.module';
 
 @Module({})
 export class AppModule {
@@ -128,6 +129,7 @@ export class AppModule {
         PatientFileDocumentModule,
         TherapistCertificateModule,
         SeederModule,
+        PatientAnswerModule,
       ],
       controllers: [AppController],
       providers: [
