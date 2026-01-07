@@ -43,6 +43,10 @@ export class SearchReflection implements Pageable {
   readonly mood?: ReflectionMood;
 
   @IsOptional()
+  @IsString()
+  readonly patient_id?: string;
+
+  @IsOptional()
   @IsBooleanish()
   readonly is_private?: boolean;
 }

@@ -65,6 +65,9 @@ export class ReflectionService extends CrudService<
       ...(exposed && {
         is_private: false,
       }),
+      ...(isDefined(criteria.patient_id) && {
+        patient: { id: criteria.patient_id },
+      }),
       ...(criteria.deleted_at && { deleted_at: Not(IsNull()) }),
     };
 
