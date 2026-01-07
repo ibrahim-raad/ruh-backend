@@ -25,7 +25,7 @@ export class UpdateQuestionnaire {
   @IsBooleanish()
   readonly is_active?: boolean;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }

@@ -16,7 +16,7 @@ export class UpdateAssignedExercise {
   @IsEnum(AssignedExerciseStatus)
   readonly status?: AssignedExerciseStatus;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }

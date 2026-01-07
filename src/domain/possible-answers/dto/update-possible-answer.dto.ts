@@ -15,7 +15,7 @@ export class UpdatePossibleAnswer {
   @IsUUID()
   readonly question_id?: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }

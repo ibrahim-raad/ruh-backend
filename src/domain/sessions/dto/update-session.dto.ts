@@ -5,7 +5,7 @@ export class UpdateSession {
   @IsString()
   readonly patient_feedback?: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }

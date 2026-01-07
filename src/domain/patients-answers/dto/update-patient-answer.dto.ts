@@ -15,7 +15,7 @@ export class UpdatePatientAnswer {
   @IsUUID()
   readonly possible_answer_id?: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }

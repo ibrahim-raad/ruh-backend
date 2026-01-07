@@ -30,7 +30,7 @@ export class UpdateExercise {
   @IsJSON()
   readonly config?: Record<string, any>;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }

@@ -9,7 +9,7 @@ export class UpdateLanguage {
   @IsString()
   readonly code?: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }

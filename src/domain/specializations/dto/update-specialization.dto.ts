@@ -9,7 +9,7 @@ export class UpdateSpecialization {
   @IsString()
   readonly description?: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }

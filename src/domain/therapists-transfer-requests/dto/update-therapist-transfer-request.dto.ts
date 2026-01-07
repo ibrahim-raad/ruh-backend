@@ -16,7 +16,7 @@ export class UpdateTherapistTransferRequest {
   @IsEnum(TherapistTransferRequestStatusUpdate)
   readonly status?: TherapistTransferRequestStatusUpdate;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }

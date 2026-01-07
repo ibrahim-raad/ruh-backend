@@ -109,9 +109,9 @@ export class Update${SingularPascal} {
   @IsString()
   readonly name?: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+   // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }
 EOF
 

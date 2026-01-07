@@ -33,7 +33,7 @@ export class UpdateTherapistException {
   @IsString()
   readonly reason?: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }

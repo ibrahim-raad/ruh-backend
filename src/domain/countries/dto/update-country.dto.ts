@@ -5,7 +5,7 @@ export class UpdateCountry {
   @IsString()
   readonly name?: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }

@@ -5,7 +5,7 @@ export class UpdateSessionNotes {
   @IsString()
   readonly content: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }

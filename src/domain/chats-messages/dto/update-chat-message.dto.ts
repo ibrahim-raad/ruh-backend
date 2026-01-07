@@ -5,7 +5,7 @@ export class UpdateChatMessage {
   @IsString()
   readonly message?: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }

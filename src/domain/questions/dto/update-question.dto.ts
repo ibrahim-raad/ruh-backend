@@ -25,7 +25,7 @@ export class UpdateQuestion {
   @IsUUID()
   readonly questionnaire_id?: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }

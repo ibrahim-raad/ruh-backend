@@ -5,7 +5,7 @@ export class UpdateTherapyCase {
   @IsString()
   readonly notes?: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }

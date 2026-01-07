@@ -6,7 +6,7 @@ export class UpdateUserSpokenLanguage {
   @IsBooleanish()
   readonly is_primary: boolean;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }

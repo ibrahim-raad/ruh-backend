@@ -47,7 +47,7 @@ export class UpdateTherapistSettings {
   @Max(60)
   readonly buffer_minutes?: number;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }

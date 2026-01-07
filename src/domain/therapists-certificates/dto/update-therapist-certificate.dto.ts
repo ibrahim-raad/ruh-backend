@@ -30,7 +30,7 @@ export class UpdateTherapistCertificate {
   @IsUUID()
   readonly specialization_id?: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }

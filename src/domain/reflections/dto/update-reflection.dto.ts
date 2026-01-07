@@ -25,7 +25,7 @@ export class UpdateReflection {
   @IsEnum(ReflectionMood)
   readonly mood?: ReflectionMood;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }

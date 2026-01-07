@@ -13,7 +13,7 @@ export class UpdateCurrency {
   @IsString()
   readonly symbol?: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }
