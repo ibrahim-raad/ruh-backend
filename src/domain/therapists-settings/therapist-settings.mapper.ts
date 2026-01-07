@@ -14,11 +14,9 @@ export class TherapistSettingsMapper {
     input: UpdateTherapistSettings,
     existing: TherapistSettings,
   ): TherapistSettings {
-    if (isDefined(input.version) && isDefined(existing?.version)) {
-      if (!isEqual(input.version, existing?.version)) {
-        throw new ConflictUpdateError();
-      }
-    }
+    // @IsNotEmpty()
+    // @IsNumber()
+    // readonly version: number;
     const data = {
       timezone: input.timezone ?? existing?.timezone,
       is_open: input.is_open ?? existing?.is_open,

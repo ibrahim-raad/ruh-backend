@@ -15,11 +15,11 @@ export class TherapyCaseMapper {
     private readonly therapistMapper: TherapistMapper,
   ) {}
   public toModel(input: UpdateTherapyCase, existing: TherapyCase): TherapyCase {
-    if (isDefined(input.version) && isDefined(existing?.version)) {
-      if (!isEqual(input.version, existing?.version)) {
-        throw new ConflictUpdateError();
-      }
-    }
+    // if (isDefined(input.version) && isDefined(existing?.version)) {
+    //   if (!isEqual(input.version, existing?.version)) {
+    //     throw new ConflictUpdateError();
+    //   }
+    // }
     const data = {
       notes: input.notes ?? existing?.notes,
       type: existing?.type,

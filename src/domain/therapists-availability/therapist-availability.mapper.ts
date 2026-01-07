@@ -17,11 +17,9 @@ export class TherapistAvailabilityMapper {
   ): TherapistAvailability {
     let data = {};
 
-    if (isDefined(input.version) && isDefined(existing?.version)) {
-      if (!isEqual(input.version, existing?.version)) {
-        throw new ConflictUpdateError();
-      }
-    }
+    // @IsNotEmpty()
+    // @IsNumber()
+    // readonly version: number;
     data = {
       day_of_week: input.day_of_week ?? existing?.day_of_week,
       start_time: input.start_time ?? existing?.start_time,

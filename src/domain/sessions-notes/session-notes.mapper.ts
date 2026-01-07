@@ -15,11 +15,9 @@ export class SessionNotesMapper {
     input: UpdateSessionNotes,
     existing: SessionNotes,
   ): SessionNotes {
-    if (isDefined(input.version) && isDefined(existing?.version)) {
-      if (!isEqual(input.version, existing?.version)) {
-        throw new ConflictUpdateError();
-      }
-    }
+    // @IsNotEmpty()
+    // @IsNumber()
+    // readonly version: number;
     const data = {
       content: input.content ?? existing?.content,
     };
