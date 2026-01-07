@@ -33,7 +33,7 @@ export class UpdateUser {
   @IsDate()
   readonly date_of_birth?: Date;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly version: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly version: number;
 }
