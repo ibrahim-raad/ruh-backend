@@ -29,11 +29,11 @@ export class ChatMessageMapper {
     let data = {};
 
     if (input instanceof UpdateChatMessage) {
-      if (isDefined(input.version) && isDefined(existing?.version)) {
-        if (!isEqual(input.version, existing?.version)) {
-          throw new ConflictUpdateError();
-        }
-      }
+      // if (isDefined(input.version) && isDefined(existing?.version)) {
+      //   if (!isEqual(input.version, existing?.version)) {
+      //     throw new ConflictUpdateError();
+      //   }
+      // }
       if (isDefined(input.message) && existing?.type !== ChatMessageType.TEXT) {
         throw new BadRequestException('Message type must be text');
       }

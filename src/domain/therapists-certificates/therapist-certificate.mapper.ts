@@ -29,11 +29,11 @@ export class TherapistCertificateMapper {
     let data = {};
 
     if (input instanceof UpdateTherapistCertificate) {
-      if (isDefined(input.version) && isDefined(existing?.version)) {
-        if (!isEqual(input.version, existing?.version)) {
-          throw new ConflictUpdateError();
-        }
-      }
+      // if (isDefined(input.version) && isDefined(existing?.version)) {
+      //   if (!isEqual(input.version, existing?.version)) {
+      //     throw new ConflictUpdateError();
+      //   }
+      // }
       data = {
         title: input.title ?? existing?.title,
         issuer: input.issuer ?? existing?.issuer,

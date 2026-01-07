@@ -20,11 +20,11 @@ export class CurrencyMapper {
     let data = {};
 
     if (input instanceof UpdateCurrency) {
-      if (isDefined(input.version) && isDefined(existing?.version)) {
-        if (!isEqual(input.version, existing?.version)) {
-          throw new ConflictUpdateError();
-        }
-      }
+      // if (isDefined(input.version) && isDefined(existing?.version)) {
+      //   if (!isEqual(input.version, existing?.version)) {
+      //     throw new ConflictUpdateError();
+      //   }
+      // }
       data = {
         name: input.name ?? existing?.name,
         code: input.code ?? existing?.code,

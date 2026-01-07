@@ -33,11 +33,11 @@ export class UserMapper {
     let data = {};
 
     if (input instanceof UpdateUser) {
-      if (isDefined(input.version) && isDefined(existing?.version)) {
-        if (!isEqual(input.version, existing?.version)) {
-          throw new ConflictUpdateError();
-        }
-      }
+      // if (isDefined(input.version) && isDefined(existing?.version)) {
+      //   if (!isEqual(input.version, existing?.version)) {
+      //     throw new ConflictUpdateError();
+      //   }
+      // }
       data = {
         full_name: input.full_name ?? existing?.full_name,
         gender: input.gender ?? existing?.gender,

@@ -25,11 +25,11 @@ export class SessionReportMapper {
     let data = {};
 
     if (input instanceof UpdateSessionReport) {
-      if (isDefined(input.version) && isDefined(existing?.version)) {
-        if (!isEqual(input.version, existing?.version)) {
-          throw new ConflictUpdateError();
-        }
-      }
+      // if (isDefined(input.version) && isDefined(existing?.version)) {
+      //   if (!isEqual(input.version, existing?.version)) {
+      //     throw new ConflictUpdateError();
+      //   }
+      // }
       data = {
         overview: input.overview ?? existing?.overview,
         diagnosis: input.diagnosis ?? existing?.diagnosis,

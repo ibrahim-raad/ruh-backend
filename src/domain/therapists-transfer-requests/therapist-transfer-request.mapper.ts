@@ -36,11 +36,11 @@ export class TherapistTransferRequestMapper {
     let data = {};
 
     if (input instanceof UpdateTherapistTransferRequest) {
-      if (isDefined(input.version) && isDefined(existing?.version)) {
-        if (!isEqual(input.version, existing?.version)) {
-          throw new ConflictUpdateError();
-        }
-      }
+      // if (isDefined(input.version) && isDefined(existing?.version)) {
+      //   if (!isEqual(input.version, existing?.version)) {
+      //     throw new ConflictUpdateError();
+      //   }
+      // }
       data = {
         transfer_reason: existing?.transfer_reason,
         status_reason: input.status_reason ?? existing?.status_reason,

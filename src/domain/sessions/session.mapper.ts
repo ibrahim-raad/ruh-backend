@@ -24,11 +24,11 @@ export class SessionMapper {
     let data: Partial<Session> = {};
 
     if (input instanceof UpdateSession) {
-      if (isDefined(input.version) && isDefined(existing?.version)) {
-        if (!isEqual(input.version, existing?.version)) {
-          throw new ConflictUpdateError();
-        }
-      }
+      // if (isDefined(input.version) && isDefined(existing?.version)) {
+      //   if (!isEqual(input.version, existing?.version)) {
+      //     throw new ConflictUpdateError();
+      //   }
+      // }
       data = {
         patient_feedback: input.patient_feedback ?? existing?.patient_feedback,
       };

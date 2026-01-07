@@ -29,11 +29,11 @@ export class UserSpokenLanguageMapper {
     let data = {};
 
     if (input instanceof UpdateUserSpokenLanguage) {
-      if (isDefined(input.version) && isDefined(existing?.version)) {
-        if (!isEqual(input.version, existing?.version)) {
-          throw new ConflictUpdateError();
-        }
-      }
+      // if (isDefined(input.version) && isDefined(existing?.version)) {
+      //   if (!isEqual(input.version, existing?.version)) {
+      //     throw new ConflictUpdateError();
+      //   }
+      // }
       data = {
         is_primary: input.is_primary ?? existing?.is_primary,
         language: existing?.language,

@@ -35,11 +35,11 @@ export class PatientFileDocumentMapper {
     let data = {};
 
     if (input instanceof UpdatePatientFileDocument) {
-      if (isDefined(input.version) && isDefined(existing?.version)) {
-        if (!isEqual(input.version, existing?.version)) {
-          throw new ConflictUpdateError();
-        }
-      }
+      // if (isDefined(input.version) && isDefined(existing?.version)) {
+      //   if (!isEqual(input.version, existing?.version)) {
+      //     throw new ConflictUpdateError();
+      //   }
+      // }
       data = {
         description: input.description ?? existing?.description,
       };

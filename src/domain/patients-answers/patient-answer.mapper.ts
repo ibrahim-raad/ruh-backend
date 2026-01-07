@@ -31,11 +31,11 @@ export class PatientAnswerMapper {
     let data = {};
 
     if (input instanceof UpdatePatientAnswer) {
-      if (isDefined(input.version) && isDefined(existing?.version)) {
-        if (!isEqual(input.version, existing?.version)) {
-          throw new ConflictUpdateError();
-        }
-      }
+      // if (isDefined(input.version) && isDefined(existing?.version)) {
+      //   if (!isEqual(input.version, existing?.version)) {
+      //     throw new ConflictUpdateError();
+      //   }
+      // }
       data = {
         answer: input.answer ?? existing?.answer,
         possible_answer: input.possible_answer_id

@@ -22,11 +22,11 @@ export class QuestionMapper {
     let data = {};
 
     if (input instanceof UpdateQuestion) {
-      if (isDefined(input.version) && isDefined(existing?.version)) {
-        if (!isEqual(input.version, existing?.version)) {
-          throw new ConflictUpdateError();
-        }
-      }
+      // if (isDefined(input.version) && isDefined(existing?.version)) {
+      //   if (!isEqual(input.version, existing?.version)) {
+      //     throw new ConflictUpdateError();
+      //   }
+      // }
       data = {
         question: input.question ?? existing?.question,
         order: input.order ?? existing?.order,

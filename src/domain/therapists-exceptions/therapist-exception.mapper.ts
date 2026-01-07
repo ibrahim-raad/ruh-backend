@@ -25,11 +25,11 @@ export class TherapistExceptionMapper {
     let data = {};
 
     if (input instanceof UpdateTherapistException) {
-      if (isDefined(input.version) && isDefined(existing?.version)) {
-        if (!isEqual(input.version, existing?.version)) {
-          throw new ConflictUpdateError();
-        }
-      }
+      // if (isDefined(input.version) && isDefined(existing?.version)) {
+      //   if (!isEqual(input.version, existing?.version)) {
+      //     throw new ConflictUpdateError();
+      //   }
+      // }
       data = {
         date: input.date ?? existing?.date,
         is_available: input.is_available ?? existing?.is_available,

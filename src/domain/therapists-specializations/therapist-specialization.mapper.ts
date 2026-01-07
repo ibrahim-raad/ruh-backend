@@ -29,11 +29,11 @@ export class TherapistSpecializationMapper {
     let data = {};
 
     if (input instanceof UpdateTherapistSpecialization) {
-      if (isDefined(input.version) && isDefined(existing?.version)) {
-        if (!isEqual(input.version, existing?.version)) {
-          throw new ConflictUpdateError();
-        }
-      }
+      // if (isDefined(input.version) && isDefined(existing?.version)) {
+      //   if (!isEqual(input.version, existing?.version)) {
+      //     throw new ConflictUpdateError();
+      //   }
+      // }
       data = {
         specialization: { id: input.specialization_id },
         therapist: existing?.therapist,

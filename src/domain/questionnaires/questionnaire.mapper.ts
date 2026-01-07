@@ -25,11 +25,11 @@ export class QuestionnaireMapper {
     let data = {};
 
     if (input instanceof UpdateQuestionnaire) {
-      if (isDefined(input.version) && isDefined(existing?.version)) {
-        if (!isEqual(input.version, existing?.version)) {
-          throw new ConflictUpdateError();
-        }
-      }
+      // if (isDefined(input.version) && isDefined(existing?.version)) {
+      //   if (!isEqual(input.version, existing?.version)) {
+      //     throw new ConflictUpdateError();
+      //   }
+      // }
       data = {
         title: input.title ?? existing?.title,
         description: input.description ?? existing?.description,

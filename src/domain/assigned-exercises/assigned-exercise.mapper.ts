@@ -33,11 +33,11 @@ export class AssignedExerciseMapper {
     let data = {};
 
     if (input instanceof UpdateAssignedExercise) {
-      if (isDefined(input.version) && isDefined(existing?.version)) {
-        if (!isEqual(input.version, existing?.version)) {
-          throw new ConflictUpdateError();
-        }
-      }
+      // if (isDefined(input.version) && isDefined(existing?.version)) {
+      //   if (!isEqual(input.version, existing?.version)) {
+      //     throw new ConflictUpdateError();
+      //   }
+      // }
       data = {
         completion_notes: input.completion_notes ?? existing?.completion_notes,
         status: input.status ?? existing?.status,
